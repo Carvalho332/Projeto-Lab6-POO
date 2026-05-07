@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="All Tests" type="JUnit" factoryName="JUnit">
+    <module name="Projeto-Lab6-POO" />
+    <option name="PACKAGE_NAME" value="" />
+    <option name="TEST_OBJECT" value="package" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
