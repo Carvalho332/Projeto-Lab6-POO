@@ -3,15 +3,7 @@ package GUI;
 import Engine.*;
 
 import javax.swing.JPanel;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -270,20 +262,128 @@ public class MapPanel extends JPanel {
     }
 
     private void desenharPoligono(Graphics2D g2, Transform t, Poligono p) {
+
         Path2D path = new Path2D.Double();
+
         Ponto primeiro = p.getVertice(0);
-        path.moveTo(t.x(primeiro), t.y(primeiro));
+
+        path.moveTo(
+                t.x(primeiro),
+                t.y(primeiro)
+        );
+
         for (int i = 1; i < p.getNumeroVertices(); i++) {
+
             Ponto v = p.getVertice(i);
-            path.lineTo(t.x(v), t.y(v));
+
+            path.lineTo(
+                    t.x(v),
+                    t.y(v)
+            );
         }
+
         path.closePath();
 
-        g2.setColor(new Color(150, 92, 200, 110));
-        g2.fill(path);
-        g2.setColor(new Color(96, 46, 142));
-        g2.setStroke(new BasicStroke(2f));
-        g2.draw(path);
+        int n = p.getNumeroVertices();
+
+        // =====================================================
+        // FAROL
+        // =====================================================
+
+        if (n == 4) {
+
+            g2.setColor(new Color(240, 240, 240));
+            g2.fill(path);
+
+            Rectangle bounds = path.getBounds();
+
+            // === 4 LISTRAS HORIZONTAIS VERMELHAS ===
+            g2.setClip(path);
+
+            g2.setColor(Color.RED);
+            g2.setStroke(new BasicStroke(3f));
+
+            int step = bounds.height / 5;
+
+            for (int i = 1; i <= 4; i++) {
+                int y = bounds.y + i * step;
+                g2.drawLine(bounds.x, y, bounds.x + bounds.width, y);
+            }
+
+            g2.setClip(null);
+
+            // contorno
+            g2.setColor(Color.RED);
+            g2.setStroke(new BasicStroke(2f));
+            g2.draw(path);
+        }
+
+        // =====================================================
+        // TELHADO FAROL
+        // =====================================================
+
+        else if (n == 3) {
+
+            g2.setColor(new Color(200, 40, 40));
+            g2.fill(path);
+
+            g2.setColor(Color.BLACK);
+            g2.draw(path);
+        }
+
+        // =====================================================
+        // ROCHA
+        // =====================================================
+
+        else if (n == 5) {
+
+            g2.setColor(new Color(110, 110, 110));
+            g2.fill(path);
+
+            g2.setColor(new Color(70, 70, 70));
+            g2.setStroke(new BasicStroke(2f));
+            g2.draw(path);
+        }
+
+        // =====================================================
+        // ILHAS
+        // =====================================================
+
+        else {
+
+            g2.setColor(new Color(90, 170, 90));
+            g2.fill(path);
+
+            g2.setColor(new Color(40, 110, 40));
+            g2.setStroke(new BasicStroke(2f));
+            g2.draw(path);
+
+            desenharPalmeira(g2, path);
+        }
+    }
+    private void desenharPalmeira(Graphics2D g2, Path2D path) {
+
+        Rectangle r = path.getBounds();
+
+        int x = r.x + r.width / 2;
+        int y = r.y + r.height / 2;
+
+        // tronco
+        g2.setColor(new Color(139, 69, 19));
+        g2.setStroke(new BasicStroke(3f));
+        g2.drawLine(x, y, x, y - 15);
+
+        // folhas
+        g2.setColor(new Color(34, 139, 34));
+
+        for (int i = 0; i < 6; i++) {
+            double angle = Math.toRadians(i * 60);
+
+            int x2 = (int) (x + Math.cos(angle) * 10);
+            int y2 = (int) (y - 15 + Math.sin(angle) * 10);
+
+            g2.drawLine(x, y - 15, x2, y2);
+        }
     }
 
     private void desenharPortos(Graphics2D g2, Transform t) {

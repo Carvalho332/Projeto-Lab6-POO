@@ -134,68 +134,22 @@ public final class Cenario {
     private static void adicionarObstaculosFixos(MapaNavegacao mapa) {
         // FAROL
         mapa.adicionarObstaculoFixo(
-                new Poligono(new Ponto[]{
-                        p(13, 10),
-                        p(13.4, 10),
-                        p(13.5, 12.2),
-                        p(12.9, 12.2)
-                })
-        );
-
+                new Poligono(new Ponto[]{p(13, 10), p(13.4, 10), p(13.5, 12.2), p(12.9, 12.2)}));
         mapa.adicionarObstaculoFixo(
-                new Poligono(new Ponto[]{
-                        p(12.7, 12.2),
-                        p(13.7, 12.2),
-                        p(13.7, 12.7),
-                        p(12.7, 12.7)
-                })
-        );
-
+                new Poligono(new Ponto[]{p(12.7, 12.2), p(13.7, 12.2), p(13.7, 12.7), p(12.7, 12.7)}));
         mapa.adicionarObstaculoFixo(
                 new Poligono(new Ponto[]{p(12.6, 12.7), p(13.2, 13.3), p(13.8, 12.7)})
         );
         // ILHA
-
         mapa.adicionarObstaculoFixo(
-                new Poligono(new Ponto[]{
-                        p(13, 7),
-                        p(14, 6),
-                        p(15.2, 6.4),
-                        p(15.6, 7.4),
-                        p(14.8, 8.1),
-                        p(13.5, 8.0),
-                        p(12.8, 7.5)
-                })
+                new Poligono(new Ponto[]{p(13, 7), p(14, 6), p(15.2, 6.4), p(15.6, 7.4), p(14.8, 8.1), p(13.5, 8.0), p(12.8, 7.5)})
         );
-
-        // =====================================================
         // ROCHA
-        // =====================================================
-
         mapa.adicionarObstaculoFixo(
-                new Poligono(new Ponto[]{
-                        p(0, 12),
-                        p(-1.5, 10),
-                        p(-0.8, 8.7),
-                        p(1, 8),
-                        p(1.5, 10.5)
-                })
-        );
-
-        // =====================================================
+                new Poligono(new Ponto[]{p(0, 12), p(-1.5, 10), p(-0.8, 8.7), p(1, 8), p(1.5, 10.5)}));
         // ILHA IRREGULAR
-        // =====================================================
-
         mapa.adicionarObstaculoFixo(
-                new Poligono(new Ponto[]{
-                        p(2, 15),
-                        p(4, 15),
-                        p(5, 16),
-                        p(4.5, 17.5),
-                        p(3, 18),
-                        p(1.7, 17),
-                        p(1.2, 16)
-                })
+                new Poligono(new Ponto[]{p(2, 15), p(4, 15), p(5, 16), p(4.5, 17.5), p(3, 18), p(1.7, 17), p(1.2, 16)})
         );
     }
 
