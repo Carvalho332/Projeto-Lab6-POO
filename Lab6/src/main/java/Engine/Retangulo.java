@@ -4,8 +4,6 @@ package Engine;
  * Responsabilidade: representar um retângulo definido por quatro vértices.
  */
 public class Retangulo extends Poligono {
-    private static final double EPS = 1e-9;
-
     public Retangulo(Ponto[] vertices) {
         super(vertices);
         verificaInvariante();
@@ -21,17 +19,23 @@ public class Retangulo extends Poligono {
         Ponto c = getVertice(2);
         Ponto d = getVertice(3);
 
-        double ab = a.dist(b);
-        double bc = b.dist(c);
-        double cd = c.dist(d);
-        double da = d.dist(a);
-        double ac = a.dist(c);
-        double bd = b.dist(d);
-
-        if (Math.abs(ab - cd) >= EPS ||
-                Math.abs(bc - da) >= EPS ||
-                Math.abs(ac - bd) >= EPS) {
+        if (!ladosOpostosIguais(a, b, c, d) || !diagonaisIguais(a, b, c, d) ||
+                !angulosConsecutivosRetos(a, b, c, d)) {
             throw new IllegalArgumentException("Retangulo:iv");
         }
+    }
+
+    private boolean ladosOpostosIguais(Ponto a, Ponto b, Ponto c, Ponto d) {
+        return Math.abs(a.dist(b) - c.dist(d)) < Geometria.EPS &&
+                Math.abs(b.dist(c) - d.dist(a)) < Geometria.EPS;
+    }
+
+    private boolean diagonaisIguais(Ponto a, Ponto b, Ponto c, Ponto d) {
+        return Math.abs(a.dist(c) - b.dist(d)) < Geometria.EPS;
+    }
+
+    private boolean angulosConsecutivosRetos(Ponto a, Ponto b, Ponto c, Ponto d) {
+        return Math.abs(Geometria.produtoInterno(a, b, c)) < Geometria.EPS &&
+                Math.abs(Geometria.produtoInterno(b, c, d)) < Geometria.EPS;
     }
 }

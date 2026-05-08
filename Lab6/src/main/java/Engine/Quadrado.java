@@ -4,8 +4,6 @@ package Engine;
  * Responsabilidade: representar um quadrado definido por quatro vértices.
  */
 public class Quadrado extends Poligono {
-    private static final double EPS = 1e-9;
-
     public Quadrado(Ponto[] vertices) {
         super(vertices);
         verificaInvariante();
@@ -25,13 +23,12 @@ public class Quadrado extends Poligono {
         double bc = b.dist(c);
         double cd = c.dist(d);
         double da = d.dist(a);
-        double ac = a.dist(c);
-        double bd = b.dist(d);
 
-        if (Math.abs(ab - bc) >= EPS ||
-                Math.abs(bc - cd) >= EPS ||
-                Math.abs(cd - da) >= EPS ||
-                Math.abs(ac - bd) >= EPS) {
+        if (Math.abs(ab - bc) >= Geometria.EPS ||
+                Math.abs(bc - cd) >= Geometria.EPS ||
+                Math.abs(cd - da) >= Geometria.EPS ||
+                Math.abs(a.dist(c) - b.dist(d)) >= Geometria.EPS ||
+                Math.abs(Geometria.produtoInterno(a, b, c)) >= Geometria.EPS) {
             throw new IllegalArgumentException("Quadrado:iv");
         }
     }

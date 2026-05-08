@@ -30,4 +30,9 @@ public class Viagem {
     public double getVelocidadeLinear() {
         return velocidadeLinear;
     }
+
+    @Override
+    public String toString() {
+        return "Viagem{t=" + tempoSaida + ", destino=" + destino.getNome() + ", vl=" + velocidadeLinear + "}";
+    }
 }

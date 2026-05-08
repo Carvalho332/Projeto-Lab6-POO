@@ -89,6 +89,20 @@ public class Circulo extends Obstaculo {
         return resultado;
     }
 
+    /**
+     * Verifica se um ponto está dentro ou na fronteira do círculo.
+     *
+     * @param p ponto a testar
+     * @return true se a distância ao centro for menor ou igual ao raio
+     */
+    @Override
+    public boolean contem(Ponto p) {
+        if (p == null) {
+            throw new IllegalArgumentException("Circulo.contem: ponto null");
+        }
+        return centro.dist(p) <= raio + EPS;
+    }
+
     private void verificaInvariante() {
         if (!Double.isFinite(raio) || raio <= 0.0) {
             throw new IllegalArgumentException("Circulo:iv");

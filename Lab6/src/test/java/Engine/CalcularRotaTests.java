@@ -94,6 +94,26 @@ public class CalcularRotaTests {
         assertNull(new CalcularRota().rotaMaisRapida(a, b, mapa, new Vetor(0.0, 0.0), 1.0));
     }
 
+
+    @Test
+    public void testCalcularRetornaOptionalVazioQuandoNaoExisteCaminho() {
+        Porto a = TestSupport.porto("A", 0.0, 0.0);
+        Porto b = TestSupport.porto("B", 10.0, 0.0);
+        MapaNavegacao mapa = new MapaNavegacao();
+        mapa.adicionarPorto(a);
+        mapa.adicionarPorto(b);
+
+        assertTrue(new CalcularRota().calcular(a, b, mapa, new Vetor(0.0, 0.0), 1.0).isEmpty());
+    }
+
+    @Test
+    public void testRotaBloqueadaQuandoSegmentoEstaDentroDoObstaculo() {
+        Route rota = new Route(new Ponto[] { new Ponto(0.0, 0.0), new Ponto(1.0, 0.0) });
+        Obstaculo obstaculo = new Circulo(new Ponto(0.5, 0.0), 10.0);
+
+        assertTrue(new CalcularRota().rotaBloqueada(rota, List.of(obstaculo)));
+    }
+
     @Test
     public void testInvalidArguments() {
         CalcularRota calc = new CalcularRota();

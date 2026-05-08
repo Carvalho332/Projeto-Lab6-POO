@@ -46,6 +46,23 @@ public class Porto {
         listaEspera.remove(v);
     }
 
+    public boolean temViagensEmEspera() {
+        return !listaEspera.isEmpty();
+    }
+
+    public List<Viagem> getViagensParaSairNoTempo(int tempo) {
+        if (tempo < 0) {
+            throw new IllegalArgumentException("Porto.getViagensParaSairNoTempo: tempo invalido");
+        }
+        List<Viagem> resultado = new ArrayList<>();
+        for (Viagem viagem : listaEspera) {
+            if (viagem.getTempoSaida() == tempo) {
+                resultado.add(viagem);
+            }
+        }
+        return Collections.unmodifiableList(resultado);
+    }
+
     @Override
     public String toString() {
         return nome + " " + posicao;

@@ -6,8 +6,6 @@ package Engine;
  * @inv as componentes são valores finitos.
  */
 public class Vetor {
-    private static final double EPS = 1e-9;
-
     private final double x;
     private final double y;
 
@@ -17,11 +15,6 @@ public class Vetor {
         verificaInvariante();
     }
 
-    /**
-     * Cria o vetor posição correspondente ao ponto dado.
-     *
-     * @param p ponto usado como extremidade do vetor com origem em (0,0)
-     */
     public Vetor(Ponto p) {
         if (p == null) {
             throw new IllegalArgumentException("Vetor: ponto nao pode ser null");
@@ -40,7 +33,11 @@ public class Vetor {
     }
 
     public double modulo() {
-        return Math.sqrt(x * x + y * y);
+        return Math.sqrt(modulo2());
+    }
+
+    public double modulo2() {
+        return x * x + y * y;
     }
 
     public double produtoInterno(Vetor other) {
@@ -55,19 +52,12 @@ public class Vetor {
             throw new IllegalArgumentException("Vetor.cosineSimilarity: other nao pode ser null");
         }
         double den = modulo() * other.modulo();
-        if (den <= EPS) {
+        if (den <= Geometria.EPS) {
             throw new IllegalArgumentException("Vetor.cosineSimilarity: vetor nulo");
         }
         return produtoInterno(other) / den;
     }
 
-    /**
-     * Interseção entre este vetor, interpretado como segmento da origem até à sua extremidade,
-     * e um segmento de reta.
-     *
-     * @param s segmento de reta
-     * @return ponto de interseção ou null
-     */
     public Ponto intersect(SegmentoReta s) {
         if (s == null) {
             throw new IllegalArgumentException("Vetor.intersect: segmento nao pode ser null");
@@ -90,11 +80,14 @@ public class Vetor {
     }
 
     public Vetor mult(double d) {
+        if (!Geometria.finito(d)) {
+            throw new IllegalArgumentException("Vetor.mult: escalar invalido");
+        }
         return new Vetor(x * d, y * d);
     }
 
     private void verificaInvariante() {
-        if (!Double.isFinite(x) || !Double.isFinite(y)) {
+        if (!Geometria.finito(x) || !Geometria.finito(y)) {
             throw new IllegalArgumentException("Vetor:iv");
         }
     }

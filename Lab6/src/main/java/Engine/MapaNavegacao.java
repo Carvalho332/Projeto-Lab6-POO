@@ -3,6 +3,7 @@ package Engine;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Responsabilidade: agregar portos, rotas e obstáculos do mapa de navegação.
@@ -64,18 +65,53 @@ public class MapaNavegacao {
     }
 
     public void definirObstaculosMoveis(List<ObstaculoMovel> obstaculosMoveis) {
-        if (obstaculosMoveis == null) {
-            throw new IllegalArgumentException("MapaNavegacao.definirObstaculosMoveis: lista null");
+        this.obstaculosMoveis = copiarListaSemNulls(obstaculosMoveis, "obstaculosMoveis");
+    }
+
+    public Optional<Porto> procurarPortoPorNome(String nome) {
+        if (nome == null || nome.isBlank()) {
+            return Optional.empty();
         }
-        this.obstaculosMoveis = new ArrayList<>(obstaculosMoveis);
+        for (Porto p : portos) {
+            if (p.getNome().equals(nome)) {
+                return Optional.of(p);
+            }
+        }
+        return Optional.empty();
     }
 
     public Porto getPortoPorNome(String nome) {
-        for (Porto p : portos) {
-            if (p.getNome().equals(nome)) {
-                return p;
-            }
+        return procurarPortoPorNome(nome).orElse(null);
+    }
+
+    public boolean temPorto(Porto porto) {
+        return porto != null && portos.contains(porto);
+    }
+
+    public boolean rotaLigaPortos(Route rota) {
+        if (rota == null) {
+            return false;
         }
-        return null;
+        return portos.stream().anyMatch(p -> p.getPosicao().igual(rota.getInicio())) &&
+                portos.stream().anyMatch(p -> p.getPosicao().igual(rota.getFim()));
+    }
+
+    public boolean cumpreMinimosEnunciado() {
+        return portos.size() >= 4 && rotas.size() >= 6 &&
+                obstaculosFixos.size() >= 4 && obstaculosMoveis.size() >= 2;
+    }
+
+    private <T> List<T> copiarListaSemNulls(List<T> lista, String nome) {
+        if (lista == null) {
+            throw new IllegalArgumentException("MapaNavegacao: " + nome + " null");
+        }
+        List<T> copia = new ArrayList<>();
+        for (T elemento : lista) {
+            if (elemento == null) {
+                throw new IllegalArgumentException("MapaNavegacao: " + nome + " contem null");
+            }
+            copia.add(elemento);
+        }
+        return copia;
     }
 }

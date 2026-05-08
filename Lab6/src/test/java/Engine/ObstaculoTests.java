@@ -19,6 +19,11 @@ public class ObstaculoTests {
         public Ponto[] intersect(SegmentoReta s) {
             return new Ponto[] { s.getA() };
         }
+
+        @Override
+        public boolean contem(Ponto p) {
+            return p != null && p.igual(new Ponto(1.0, 2.0));
+        }
     }
 
     @Test

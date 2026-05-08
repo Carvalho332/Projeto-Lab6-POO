@@ -6,7 +6,7 @@ package Engine;
  * @inv codigoViagem != null && destino != null && velocidadeLinear > 0 && rotaAtual != null
  */
 public class Navio {
-    private static final double EPS = 1e-9;
+    private static final double DELTA_DIRECAO = 0.01;
 
     private final String codigoViagem;
     private Ponto posicaoAtual;
@@ -21,6 +21,9 @@ public class Navio {
         if (codigoViagem == null || codigoViagem.isBlank() ||
                 origem == null || viagem == null || rota == null) {
             throw new IllegalArgumentException("Navio:iv");
+        }
+        if (!rota.getInicio().igual(origem.getPosicao())) {
+            throw new IllegalArgumentException("Navio: rota deve começar no porto de origem");
         }
 
         this.codigoViagem = codigoViagem;
@@ -61,90 +64,119 @@ public class Navio {
         return mostrarCirculoColisao;
     }
 
+    public boolean estaEmMovimento() {
+        return estado == EstadoNavio.EM_MOVIMENTO;
+    }
+
+    public boolean estaEmEspera() {
+        return estado == EstadoNavio.EM_ESPERA;
+    }
+
+    public boolean chegou() {
+        return estado == EstadoNavio.CHEGOU;
+    }
+
     public Ponto proximaPosicao() {
-        if (estado != EstadoNavio.EM_MOVIMENTO) {
+        if (!estaEmMovimento()) {
             return posicaoAtual;
         }
-        return rotaAtual.position(velocidadeLinear, tempoNaRota + 1.0);
+        return posicaoNoTempo(tempoNaRota + 1.0);
     }
 
     public void avancar() {
-        if (estado == EstadoNavio.CHEGOU || estado == EstadoNavio.EM_ESPERA) {
+        if (!estaEmMovimento()) {
             return;
         }
 
         tempoNaRota += 1.0;
-        posicaoAtual = rotaAtual.position(velocidadeLinear, tempoNaRota);
+        posicaoAtual = posicaoNoTempo(tempoNaRota);
 
         if (chegouDestino()) {
-            posicaoAtual = destino.getPosicao();
-            estado = EstadoNavio.CHEGOU;
+            marcarComoChegou();
         }
     }
 
     public void esperar() {
-        if (estado == EstadoNavio.EM_MOVIMENTO) {
+        if (estaEmMovimento()) {
             estado = EstadoNavio.EM_ESPERA;
             mostrarCirculoColisao = true;
         }
     }
 
     public void retomar() {
-        if (estado == EstadoNavio.EM_ESPERA) {
+        if (estaEmEspera()) {
             estado = EstadoNavio.EM_MOVIMENTO;
             mostrarCirculoColisao = false;
         }
     }
 
     public boolean chegouDestino() {
-        return posicaoAtual.dist(destino.getPosicao()) < EPS ||
-                tempoNaRota >= rotaAtual.time(velocidadeLinear) - EPS;
+        return posicaoAtual.dist(destino.getPosicao()) < Geometria.EPS ||
+                tempoNaRota >= tempoTotalRota() - Geometria.EPS;
     }
 
     public void definirRotaAtual(Route novaRota) {
         if (novaRota == null) {
             throw new IllegalArgumentException("Navio.definirRotaAtual: rota null");
         }
+        if (!novaRota.getInicio().igual(posicaoAtual)) {
+            throw new IllegalArgumentException("Navio.definirRotaAtual: nova rota deve começar na posição atual");
+        }
         this.rotaAtual = novaRota;
         this.tempoNaRota = 0.0;
-        this.posicaoAtual = novaRota.getInicio();
     }
 
     public void limparSinalizacaoColisao() {
         this.mostrarCirculoColisao = false;
     }
 
-    /**
-     * Devolve um ponto muito próximo que indica a direção atual do navio na rota.
-     *
-     * @return ponto usado pelo GUI para orientar o desenho do navio
-     */
     public Ponto getPontoDirecao() {
-        double tempoTotal = rotaAtual.time(velocidadeLinear);
+        double tempoTotal = tempoTotalRota();
 
-        if (tempoNaRota >= tempoTotal - EPS) {
-            double tAnterior = Math.max(0.0, tempoTotal - 0.01);
-            return rotaAtual.position(velocidadeLinear, tAnterior);
+        if (tempoNaRota >= tempoTotal - Geometria.EPS) {
+            return posicaoNoTempo(Math.max(0.0, tempoTotal - DELTA_DIRECAO));
         }
 
-        double tSeguinte = Math.min(tempoTotal, tempoNaRota + 0.01);
-        Ponto seguinte = rotaAtual.position(velocidadeLinear, tSeguinte);
-
-        if (posicaoAtual.dist(seguinte) < EPS && tempoNaRota > 0.0) {
-            double tAnterior = Math.max(0.0, tempoNaRota - 0.01);
-            return rotaAtual.position(velocidadeLinear, tAnterior);
+        Ponto seguinte = posicaoNoTempo(Math.min(tempoTotal, tempoNaRota + DELTA_DIRECAO));
+        if (posicaoAtual.dist(seguinte) < Geometria.EPS && tempoNaRota > 0.0) {
+            return posicaoNoTempo(Math.max(0.0, tempoNaRota - DELTA_DIRECAO));
         }
 
         return seguinte;
     }
 
-    /**
-     * Mantido para compatibilidade com o GUI já existente.
-     *
-     * @return ponto usado para indicar a direção atual do navio
-     */
+    public Vetor getVelocidadeVetorial(Vetor corrente) {
+        if (corrente == null) {
+            throw new IllegalArgumentException("Navio.getVelocidadeVetorial: corrente null");
+        }
+        if (!estaEmMovimento()) {
+            return new Vetor(0.0, 0.0);
+        }
+
+        Ponto direcao = getPontoDirecao();
+        if (posicaoAtual.dist(direcao) < Geometria.EPS) {
+            return new Vetor(0.0, 0.0);
+        }
+
+        AutoPilot autoPilot = new AutoPilot(posicaoAtual, direcao);
+        return autoPilot.speed(corrente, autoPilot.time(velocidadeLinear));
+    }
+
     public Ponto getProximoPonto() {
         return getPontoDirecao();
     }
-}
 
+    private double tempoTotalRota() {
+        return rotaAtual.time(velocidadeLinear);
+    }
+
+    private Ponto posicaoNoTempo(double tempo) {
+        return rotaAtual.position(velocidadeLinear, tempo);
+    }
+
+    private void marcarComoChegou() {
+        posicaoAtual = destino.getPosicao();
+        estado = EstadoNavio.CHEGOU;
+        mostrarCirculoColisao = false;
+    }
+}

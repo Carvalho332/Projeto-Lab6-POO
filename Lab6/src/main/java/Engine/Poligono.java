@@ -1,13 +1,14 @@
 package Engine;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Responsabilidade: representar um polígono definido por uma sequência ordenada de vértices.
  *
  * @inv vertices != null && vertices.length >= 3
  */
 public class Poligono extends Obstaculo {
-    private static final double EPS = 1e-9;
-
     private final Ponto[] vertices;
 
     public Poligono(Ponto[] vertices) {
@@ -41,48 +42,68 @@ public class Poligono extends Obstaculo {
         return copia;
     }
 
+    public SegmentoReta getAresta(int i) {
+        if (i < 0 || i >= vertices.length) {
+            throw new IndexOutOfBoundsException("Poligono.getAresta: indice invalido");
+        }
+        return new SegmentoReta(vertices[i], vertices[(i + 1) % vertices.length]);
+    }
+
     @Override
     public Ponto[] intersect(SegmentoReta s) {
         if (s == null) {
             throw new IllegalArgumentException("Poligono.intersect: segmento null");
         }
 
-        Ponto[] intersecoes = new Ponto[vertices.length];
-        int n = 0;
-
+        List<Ponto> intersecoes = new ArrayList<>();
         for (int i = 0; i < vertices.length; i++) {
-            SegmentoReta aresta = new SegmentoReta(vertices[i], vertices[(i + 1) % vertices.length]);
-            Ponto p = aresta.intersect(s);
-
-            if (p != null && !contem(intersecoes, n, p)) {
-                intersecoes[n++] = p;
+            Ponto p = getAresta(i).intersect(s);
+            if (p != null) {
+                adicionarPontoUnico(intersecoes, p);
             }
         }
 
-        if (n == 0) {
+        if (intersecoes.isEmpty()) {
             return null;
         }
+        return intersecoes.toArray(new Ponto[0]);
+    }
 
-        Ponto[] resultado = new Ponto[n];
-        System.arraycopy(intersecoes, 0, resultado, 0, n);
-        return resultado;
+    @Override
+    public boolean contem(Ponto p) {
+        if (p == null) {
+            throw new IllegalArgumentException("Poligono.contem: ponto null");
+        }
+
+        boolean dentro = false;
+        for (int i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+            Ponto a = vertices[j];
+            Ponto b = vertices[i];
+
+            if (Geometria.pontoPertenceAoSegmento(p, a, b)) {
+                return true;
+            }
+
+            boolean cruzaHorizontal = (a.getY() > p.getY()) != (b.getY() > p.getY());
+            if (cruzaHorizontal) {
+                double xIntersecao = a.getX() + (p.getY() - a.getY()) *
+                        (b.getX() - a.getX()) / (b.getY() - a.getY());
+                if (p.getX() < xIntersecao + Geometria.EPS) {
+                    dentro = !dentro;
+                }
+            }
+        }
+        return dentro;
     }
 
     protected boolean pontosIguais(Ponto p1, Ponto p2) {
-        return p1 != null && p2 != null &&
-                Math.abs(p1.getX() - p2.getX()) < EPS &&
-                Math.abs(p1.getY() - p2.getY()) < EPS;
+        return Geometria.iguais(p1, p2);
     }
 
     protected boolean temNumeroValidoVertices() {
         return vertices.length >= 3;
     }
 
-    /**
-     * Verifica a orientação dos vértices.
-     *
-     * @return true se os vértices estiverem no sentido horário
-     */
     protected boolean sentidoHorario() {
         double soma = 0.0;
         for (int i = 0; i < vertices.length; i++) {
@@ -90,16 +111,16 @@ public class Poligono extends Obstaculo {
             Ponto b = vertices[(i + 1) % vertices.length];
             soma += (b.getX() - a.getX()) * (b.getY() + a.getY());
         }
-        return soma > EPS;
+        return soma > Geometria.EPS;
     }
 
-    private boolean contem(Ponto[] pontos, int n, Ponto p) {
-        for (int i = 0; i < n; i++) {
-            if (pontosIguais(pontos[i], p)) {
-                return true;
+    private void adicionarPontoUnico(List<Ponto> pontos, Ponto p) {
+        for (Ponto existente : pontos) {
+            if (Geometria.iguais(existente, p)) {
+                return;
             }
         }
-        return false;
+        pontos.add(p);
     }
 
     private void verificaInvariante() {

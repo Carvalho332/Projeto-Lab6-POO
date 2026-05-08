@@ -7,10 +7,17 @@ import java.util.Random;
 /**
  * Responsabilidade: posicionar obstáculos móveis no início de cada simulação.
  *
- * Os obstáculos criados ficam centrados sobre rotas, garantindo que intersectam rotas.
+ * <p>Os obstáculos criados ficam centrados sobre rotas, garantindo que
+ * intersectam rotas. Depois de criados, permanecem fixos durante toda a
+ * simulação.</p>
+ *
+ * @version 2026-05-08
+ * @inv random != null
  */
 public class PosicionadorObstaculosMoveis {
     private static final double RAIO_DEFAULT = 1.0;
+    private static final double DISTANCIA_MINIMA_ENTRE_CENTROS = 0.5;
+    private static final int MAX_TENTATIVAS = 100;
 
     private final Random random;
 
@@ -34,18 +41,35 @@ public class PosicionadorObstaculosMoveis {
         }
 
         List<ObstaculoMovel> resultado = new ArrayList<>();
-
         for (int i = 0; i < quantidade; i++) {
-            Route rota = rotas.get(random.nextInt(rotas.size()));
-            double comprimento = rota.comprimento();
-
-            // Evita os extremos da rota para não colocar o obstáculo exatamente dentro do porto.
-            double distancia = comprimento * (0.15 + 0.70 * random.nextDouble());
-            Ponto centro = rota.position(1.0, distancia);
-
-            resultado.add(new ObstaculoMovel(centro, RAIO_DEFAULT));
+            resultado.add(criarObstaculoDiferente(rotas, resultado));
         }
-
         return resultado;
+    }
+
+    private ObstaculoMovel criarObstaculoDiferente(List<Route> rotas, List<ObstaculoMovel> existentes) {
+        for (int tentativa = 0; tentativa < MAX_TENTATIVAS; tentativa++) {
+            Route rota = rotas.get(random.nextInt(rotas.size()));
+            Ponto centro = pontoAleatorioSobreRota(rota);
+            if (centroDiferenteDosExistentes(centro, existentes)) {
+                return new ObstaculoMovel(centro, RAIO_DEFAULT);
+            }
+        }
+        throw new IllegalStateException("Nao foi possivel posicionar obstaculo movel diferente.");
+    }
+
+    private Ponto pontoAleatorioSobreRota(Route rota) {
+        double comprimento = rota.comprimento();
+        double distancia = comprimento * (0.15 + 0.70 * random.nextDouble());
+        return rota.position(1.0, distancia);
+    }
+
+    private boolean centroDiferenteDosExistentes(Ponto centro, List<ObstaculoMovel> existentes) {
+        for (ObstaculoMovel existente : existentes) {
+            if (centro.dist(existente.getCentro()) < DISTANCIA_MINIMA_ENTRE_CENTROS) {
+                return false;
+            }
+        }
+        return true;
     }
 }

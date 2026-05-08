@@ -40,6 +40,19 @@ public class InfoNavioTests {
     }
 
     @Test
+    public void testConstructorFromNavioHasVelocity() {
+        Porto a = TestSupport.porto("A", 0.0, 0.0);
+        Porto b = TestSupport.porto("B", 10.0, 0.0);
+        Viagem v = new Viagem(0, b, 2.0);
+        Route r = new Route(new Ponto[] { a.getPosicao(), b.getPosicao() });
+        Navio n = new Navio("A0", a, v, r);
+
+        InfoNavio info = new InfoNavio(n, new Vetor(0.5, 0.0));
+
+        assertNotNull(info.getVelocidadeVetorial());
+    }
+
+    @Test
     public void testInvalidInfoNavio() {
         assertThrows(IllegalArgumentException.class,
                 () -> new InfoNavio(null, new Ponto(0.0, 0.0), EstadoNavio.EM_MOVIMENTO, false));

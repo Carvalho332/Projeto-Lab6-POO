@@ -19,8 +19,8 @@ public class InfoPortoTests {
     @Test
     public void testConstructorAndGetters() {
         Porto destino = TestSupport.porto("B", 10.0, 0.0);
-        Viagem viagem = new Viagem(0, destino, 1.0);
-        List<Viagem> viagens = new ArrayList<>();
+        InfoViagem viagem = new InfoViagem(0, destino.getNome(), 1.0);
+        List<InfoViagem> viagens = new ArrayList<>();
         viagens.add(viagem);
 
         InfoPorto info = new InfoPorto("A", new Ponto(0.0, 0.0), viagens);
@@ -49,7 +49,7 @@ public class InfoPortoTests {
         InfoPorto info = new InfoPorto("A", new Ponto(0.0, 0.0), List.of());
 
         assertThrows(UnsupportedOperationException.class,
-                () -> info.getViagensEmEspera().add(new Viagem(0, TestSupport.porto("B", 1.0, 0.0), 1.0)));
+                () -> info.getViagensEmEspera().add(new InfoViagem(0, "B", 1.0)));
     }
 
     @Test

@@ -6,17 +6,9 @@ package Engine;
  * @inv os extremos são diferentes.
  */
 public class SegmentoReta {
-    private static final double EPS = 1e-9;
-
     private final Ponto a;
     private final Ponto b;
 
-    /**
-     * Cria um segmento a partir de um ponto e um vetor posição.
-     *
-     * @param a extremo inicial
-     * @param v vetor que define o segundo extremo
-     */
     public SegmentoReta(Ponto a, Vetor v) {
         if (a == null || v == null) {
             throw new IllegalArgumentException("SegmentoReta: argumentos null");
@@ -43,13 +35,14 @@ public class SegmentoReta {
         return b;
     }
 
-    /**
-     * Interseção entre este segmento e um vetor interpretado como segmento da origem
-     * até à extremidade do vetor.
-     *
-     * @param v vetor
-     * @return ponto de interseção ou null
-     */
+    public double comprimento() {
+        return a.dist(b);
+    }
+
+    public boolean contem(Ponto p) {
+        return Geometria.pontoPertenceAoSegmento(p, a, b);
+    }
+
     public Ponto intersect(Vetor v) {
         if (v == null) {
             throw new IllegalArgumentException("SegmentoReta.intersect: vetor null");
@@ -57,12 +50,6 @@ public class SegmentoReta {
         return intersect(new SegmentoReta(new Ponto(0.0, 0.0), new Ponto(v.getX(), v.getY())));
     }
 
-    /**
-     * Determina a interseção entre dois segmentos de reta.
-     *
-     * @param other outro segmento
-     * @return ponto de interseção ou null
-     */
     public Ponto intersect(SegmentoReta other) {
         if (other == null) {
             throw new IllegalArgumentException("SegmentoReta.intersect: other null");
@@ -72,7 +59,6 @@ public class SegmentoReta {
         double ay = a.getY();
         double bx = b.getX();
         double by = b.getY();
-
         double cx = other.a.getX();
         double cy = other.a.getY();
         double dx = other.b.getX();
@@ -82,47 +68,63 @@ public class SegmentoReta {
         double rY = by - ay;
         double sX = dx - cx;
         double sY = dy - cy;
-
-        double rxs = rX * sY - rY * sX;
+        double rxs = produtoVetorial(rX, rY, sX, sY);
         double qpx = cx - ax;
         double qpy = cy - ay;
-        double qpxr = qpx * rY - qpy * rX;
+        double qpxr = produtoVetorial(qpx, qpy, rX, rY);
 
-        if (Math.abs(rxs) <= EPS) {
-            if (Math.abs(qpxr) > EPS) {
-                return null;
-            }
-
-            double rr = rX * rX + rY * rY;
-            if (rr <= EPS * EPS) {
-                return null;
-            }
-
-            double t0 = (qpx * rX + qpy * rY) / rr;
-            double t1 = t0 + (sX * rX + sY * rY) / rr;
-
-            double lo = Math.max(0.0, Math.min(t0, t1));
-            double hi = Math.min(1.0, Math.max(t0, t1));
-
-            if (hi + EPS < lo) {
-                return null;
-            }
-
-            return new Ponto(ax + lo * rX, ay + lo * rY);
+        if (Math.abs(rxs) <= Geometria.EPS) {
+            return intersecaoSegmentosParalelos(ax, ay, rX, rY, sX, sY, qpx, qpy, qpxr);
         }
 
-        double t = (qpx * sY - qpy * sX) / rxs;
-        double u = (qpx * rY - qpy * rX) / rxs;
+        double t = produtoVetorial(qpx, qpy, sX, sY) / rxs;
+        double u = produtoVetorial(qpx, qpy, rX, rY) / rxs;
 
-        if (t < -EPS || t > 1.0 + EPS || u < -EPS || u > 1.0 + EPS) {
+        if (!parametroDentroDoSegmento(t) || !parametroDentroDoSegmento(u)) {
             return null;
         }
 
+        return pontoNoParametro(ax, ay, rX, rY, t);
+    }
+
+    private Ponto intersecaoSegmentosParalelos(double ax, double ay, double rX, double rY,
+                                               double sX, double sY, double qpx, double qpy,
+                                               double qpxr) {
+        if (Math.abs(qpxr) > Geometria.EPS) {
+            return null;
+        }
+
+        double rr = rX * rX + rY * rY;
+        if (rr <= Geometria.EPS * Geometria.EPS) {
+            return null;
+        }
+
+        double t0 = (qpx * rX + qpy * rY) / rr;
+        double t1 = t0 + (sX * rX + sY * rY) / rr;
+        double lo = Math.max(0.0, Math.min(t0, t1));
+        double hi = Math.min(1.0, Math.max(t0, t1));
+
+        if (hi + Geometria.EPS < lo) {
+            return null;
+        }
+
+        return pontoNoParametro(ax, ay, rX, rY, lo);
+    }
+
+    private double produtoVetorial(double ax, double ay, double bx, double by) {
+        return ax * by - ay * bx;
+    }
+
+    private boolean parametroDentroDoSegmento(double t) {
+        return t >= -Geometria.EPS && t <= 1.0 + Geometria.EPS;
+    }
+
+    private Ponto pontoNoParametro(double ax, double ay, double rX, double rY, double t) {
         return new Ponto(ax + t * rX, ay + t * rY);
     }
 
     private void verificaInvariante() {
-        if (a.dist(b) <= EPS) {
+        if (a.dist(b) <= Geometria.EPS) {
             throw new IllegalArgumentException("SegmentoReta:iv");
         }
     }

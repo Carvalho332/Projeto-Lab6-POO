@@ -29,9 +29,8 @@ public class SimulationController {
         this.mapPanel = mapPanel;
         this.statusPanel = statusPanel;
         this.seedAtual = gerarNovaSeed();
-        this.simulador = simuladorFactory.apply(seedAtual);
         this.timer = new Timer(600, e -> passo());
-        iniciar();
+        reiniciarComSeed(seedAtual);
     }
 
     public void setControlPanel(ControlPanel controlPanel) {
@@ -40,14 +39,35 @@ public class SimulationController {
     }
 
     public void iniciar() {
-        pararTimer();
-        estadoAtual = simulador.iniciar();
-        atualizarViews();
+        reiniciarComSeed(seedAtual);
     }
 
     public void passo() {
         estadoAtual = simulador.passo();
         atualizarViews();
+        if (simulador.terminou()) {
+            pararTimer();
+            atualizarEstadoBotoes();
+        }
+    }
+
+    /**
+     * Recuar um passo é feito por replay determinístico: recria-se a simulação
+     * com a mesma seed e executa-se até ao tempo anterior. Assim evita-se ter de
+     * desfazer manualmente navios, viagens, portos e colisões.
+     */
+    public void passoAtras() {
+        if (!podeAndarParaTras()) {
+            return;
+        }
+
+        pararTimer();
+        int tempoDestino = estadoAtual.getTempoAtual() - 1;
+        voltarParaTempo(tempoDestino);
+    }
+
+    public boolean podeAndarParaTras() {
+        return estadoAtual != null && estadoAtual.getTempoAtual() > 0;
     }
 
     public void alternarExecucaoAutomatica() {
@@ -59,30 +79,12 @@ public class SimulationController {
         atualizarEstadoBotoes();
     }
 
-    /**
-     * Volta ao tempo zero mantendo exatamente os mesmos dados da simulação atual:
-     * mesma corrente, mesmos obstáculos móveis e mesmas viagens.
-     *
-     * A forma segura de fazer isto é reconstruir um Simulador novo com a mesma seed,
-     * porque o Simulador remove viagens das listas dos portos quando os navios saem.
-     */
     public void reset() {
-        pararTimer();
-        simulador = simuladorFactory.apply(seedAtual);
-        estadoAtual = simulador.iniciar();
-        atualizarViews();
+        reiniciarComSeed(seedAtual);
     }
 
-    /**
-     * Gera uma simulação realmente nova: nova corrente, novos obstáculos móveis
-     * e novas viagens.
-     */
     public void novaSimulacao() {
-        pararTimer();
-        seedAtual = gerarNovaSeed();
-        simulador = simuladorFactory.apply(seedAtual);
-        estadoAtual = simulador.iniciar();
-        atualizarViews();
+        reiniciarComSeed(gerarNovaSeed());
     }
 
     public void setDelay(int millis) {
@@ -105,6 +107,29 @@ public class SimulationController {
         return seedAtual;
     }
 
+    private void voltarParaTempo(int tempoDestino) {
+        if (tempoDestino < 0) {
+            throw new IllegalArgumentException("SimulationController.voltarParaTempo: tempo invalido");
+        }
+
+        simulador = simuladorFactory.apply(seedAtual);
+        estadoAtual = simulador.iniciar();
+
+        for (int i = 0; i < tempoDestino; i++) {
+            estadoAtual = simulador.passo();
+        }
+
+        atualizarViews();
+    }
+
+    private void reiniciarComSeed(long seed) {
+        pararTimer();
+        seedAtual = seed;
+        simulador = simuladorFactory.apply(seedAtual);
+        estadoAtual = simulador.iniciar();
+        atualizarViews();
+    }
+
     private long gerarNovaSeed() {
         return ThreadLocalRandom.current().nextLong();
     }
@@ -123,7 +148,7 @@ public class SimulationController {
 
     private void atualizarEstadoBotoes() {
         if (controlPanel != null) {
-            controlPanel.atualizarTextoPlay(isRunning());
+            controlPanel.atualizarEstadoBotoes(isRunning(), podeAndarParaTras());
         }
     }
 }

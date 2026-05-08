@@ -1,5 +1,7 @@
 package GUI;
 
+import Engine.CenarioFactory;
+
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
@@ -18,7 +20,7 @@ public class NavigationFrame extends JFrame {
 
         mapPanel = new MapPanel();
         statusPanel = new StatusPanel();
-        controller = new SimulationController(Cenario::criarSimuladorDemo, mapPanel, statusPanel);
+        controller = new SimulationController(CenarioFactory::criarSimuladorDemo, mapPanel, statusPanel);
         controlPanel = new ControlPanel(controller);
         controller.setControlPanel(controlPanel);
 
