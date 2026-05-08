@@ -87,9 +87,7 @@ public class SegmentoReta {
         return pontoNoParametro(ax, ay, rX, rY, t);
     }
 
-    private Ponto intersecaoSegmentosParalelos(double ax, double ay, double rX, double rY,
-                                               double sX, double sY, double qpx, double qpy,
-                                               double qpxr) {
+    private Ponto intersecaoSegmentosParalelos(double ax, double ay, double rX, double rY, double sX, double sY, double qpx, double qpy, double qpxr) {
         if (Math.abs(qpxr) > Geometria.EPS) {
             return null;
         }

@@ -22,8 +22,7 @@ import java.util.PriorityQueue;
 public class CalcularRota implements EstrategiaCalculoRota {
 
     @Override
-    public Optional<Route> calcular(Porto origem, Porto destino, MapaNavegacao mapa,
-                                    Vetor corrente, double velocidadeLinear) {
+    public Optional<Route> calcular(Porto origem, Porto destino, MapaNavegacao mapa, Vetor corrente, double velocidadeLinear) {
         validarDados(origem, destino, mapa, corrente, velocidadeLinear);
         if (origem.getPosicao().igual(destino.getPosicao())) {
             return Optional.empty();
@@ -43,8 +42,7 @@ public class CalcularRota implements EstrategiaCalculoRota {
     /**
      * Método mantido por compatibilidade com os testes/código anteriores.
      */
-    public Route rotaMaisRapida(Porto origem, Porto destino, MapaNavegacao mapa,
-                                Vetor corrente, double vl) {
+    public Route rotaMaisRapida(Porto origem, Porto destino, MapaNavegacao mapa, Vetor corrente, double vl) {
         return calcular(origem, destino, mapa, corrente, vl).orElse(null);
     }
 
@@ -126,8 +124,7 @@ public class CalcularRota implements EstrategiaCalculoRota {
         for (int i = 0; i < rota.getNumeroSegmentos(); i++) {
             SegmentoReta segmento = rota.getSegmento(i);
             List<Ponto> pontosDoSegmento = pontosRelevantesDoSegmento(segmento, rota, mapa);
-            pontosDoSegmento.sort(Comparator.comparingDouble(p ->
-                    Geometria.parametroNoSegmento(p, segmento.getA(), segmento.getB())));
+            pontosDoSegmento.sort(Comparator.comparingDouble(p -> Geometria.parametroNoSegmento(p, segmento.getA(), segmento.getB())));
             adicionarSubLigacoes(grafo, pontosDoSegmento, mapa, corrente, vl);
         }
     }
@@ -150,8 +147,7 @@ public class CalcularRota implements EstrategiaCalculoRota {
         }
     }
 
-    private void adicionarIntersecoesComOutrasRotas(List<Ponto> pontos, SegmentoReta segmento,
-                                                    Route rotaAtual, MapaNavegacao mapa) {
+    private void adicionarIntersecoesComOutrasRotas(List<Ponto> pontos, SegmentoReta segmento, Route rotaAtual, MapaNavegacao mapa) {
         for (Route outra : mapa.getRotas()) {
             if (outra == rotaAtual) {
                 continue;
@@ -165,8 +161,7 @@ public class CalcularRota implements EstrategiaCalculoRota {
         }
     }
 
-    private void adicionarSubLigacoes(Grafo grafo, List<Ponto> pontosDoSegmento,
-                                      MapaNavegacao mapa, Vetor corrente, double vl) {
+    private void adicionarSubLigacoes(Grafo grafo, List<Ponto> pontosDoSegmento, MapaNavegacao mapa, Vetor corrente, double vl) {
         for (int i = 0; i < pontosDoSegmento.size() - 1; i++) {
             Ponto p1 = pontosDoSegmento.get(i);
             Ponto p2 = pontosDoSegmento.get(i + 1);
@@ -180,8 +175,7 @@ public class CalcularRota implements EstrategiaCalculoRota {
         }
     }
 
-    private void adicionarLigacaoBidirecional(Grafo grafo, Ponto a, Ponto b,
-                                              Route subRota, Vetor corrente, double vl) {
+    private void adicionarLigacaoBidirecional(Grafo grafo, Ponto a, Ponto b, Route subRota, Vetor corrente, double vl) {
         int ia = grafo.adicionarNo(a);
         int ib = grafo.adicionarNo(b);
         double tempo = tempoRota(subRota, corrente, vl);

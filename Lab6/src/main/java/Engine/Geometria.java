@@ -20,9 +20,7 @@ public final class Geometria {
     }
 
     public static boolean iguais(Ponto a, Ponto b) {
-        return a != null && b != null &&
-                Math.abs(a.getX() - b.getX()) < EPS &&
-                Math.abs(a.getY() - b.getY()) < EPS;
+        return a != null && b != null && Math.abs(a.getX() - b.getX()) < EPS && Math.abs(a.getY() - b.getY()) < EPS;
     }
 
     public static double distancia2(Ponto a, Ponto b) {
@@ -42,14 +40,12 @@ public final class Geometria {
         validarPonto(a, "a");
         validarPonto(b, "b");
 
-        double cross = (p.getY() - a.getY()) * (b.getX() - a.getX())
-                - (p.getX() - a.getX()) * (b.getY() - a.getY());
+        double cross = (p.getY() - a.getY()) * (b.getX() - a.getX()) - (p.getX() - a.getX()) * (b.getY() - a.getY());
         if (Math.abs(cross) > EPS) {
             return false;
         }
 
-        double dot = (p.getX() - a.getX()) * (b.getX() - a.getX())
-                + (p.getY() - a.getY()) * (b.getY() - a.getY());
+        double dot = (p.getX() - a.getX()) * (b.getX() - a.getX()) + (p.getY() - a.getY()) * (b.getY() - a.getY());
         if (dot < -EPS) {
             return false;
         }

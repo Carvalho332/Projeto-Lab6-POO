@@ -15,8 +15,7 @@ public class EstadoSimulacao {
     private final List<Route> rotas;
     private final List<Obstaculo> obstaculos;
 
-    public EstadoSimulacao(int tempoAtual, Vetor corrente, List<InfoNavio> navios,
-                           List<InfoPorto> portos, List<Route> rotas, List<Obstaculo> obstaculos) {
+    public EstadoSimulacao(int tempoAtual, Vetor corrente, List<InfoNavio> navios, List<InfoPorto> portos, List<Route> rotas, List<Obstaculo> obstaculos) {
         if (tempoAtual < 0 || corrente == null) {
             throw new IllegalArgumentException("EstadoSimulacao:iv");
         }

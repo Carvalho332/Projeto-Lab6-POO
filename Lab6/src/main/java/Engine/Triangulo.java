@@ -20,8 +20,7 @@ public class Triangulo extends Poligono {
         Ponto b = getVertice(1);
         Ponto c = getVertice(2);
 
-        double area2 = (b.getX() - a.getX()) * (c.getY() - a.getY()) -
-                (b.getY() - a.getY()) * (c.getX() - a.getX());
+        double area2 = (b.getX() - a.getX()) * (c.getY() - a.getY()) - (b.getY() - a.getY()) * (c.getX() - a.getX());
 
         if (Math.abs(area2) < EPS) {
             throw new IllegalArgumentException("Triangulo:iv");

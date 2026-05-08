@@ -80,8 +80,7 @@ public class Simulador {
                 corrente,
                 saida.viagem.getVelocidadeLinear()
         ).ifPresent(rota -> {
-            naviosAtivos.add(new Navio(gerarCodigoViagem(saida.origem, saida.viagem),
-                    saida.origem, saida.viagem, rota));
+            naviosAtivos.add(new Navio(gerarCodigoViagem(saida.origem, saida.viagem), saida.origem, saida.viagem, rota));
             saida.origem.removerViagem(saida.viagem);
         });
     }
