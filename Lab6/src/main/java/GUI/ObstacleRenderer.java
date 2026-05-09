@@ -6,11 +6,7 @@ import Engine.ObstaculoMovel;
 import Engine.Poligono;
 import Engine.Ponto;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
@@ -72,65 +68,119 @@ final class ObstacleRenderer {
     }
 
     private static void desenharFarol(Graphics2D g2, Path2D path, MapTransform t) {
-        g2.setColor(new Color(240, 240, 240));
-        g2.fill(path);
 
         Rectangle bounds = path.getBounds();
+
         Shape oldClip = g2.getClip();
         g2.setClip(path);
-        g2.setColor(Color.RED);
-        g2.setStroke(new BasicStroke(MapStyle.escalaTracoMapa(t, 3.0)));
-        int step = Math.max(1, bounds.height / 5);
-        for (int i = 1; i <= 4; i++) {
-            int y = bounds.y + i * step;
-            g2.drawLine(bounds.x, y, bounds.x + bounds.width, y);
+
+        // corpo base
+        g2.setColor(new Color(235, 235, 235));
+        g2.fill(path);
+
+        // riscas proporcionais ao zoom (usando altura real do objeto)
+        int faixas = 5;
+        double faixaAltura = bounds.getHeight() / (faixas * 2.0);
+
+        g2.setColor(new Color(200, 50, 50));
+
+        for (int i = 0; i < faixas; i++) {
+            double y = bounds.getY() + (2 * i + 1) * faixaAltura;
+            g2.fill(new Rectangle(bounds.x, (int) y, bounds.width, (int) faixaAltura));
         }
         g2.setClip(oldClip);
-
-        g2.setColor(Color.RED);
-        g2.setStroke(new BasicStroke(MapStyle.escalaTracoMapa(t, 2.0)));
+        // contorno
+        g2.setColor(new Color(120, 120, 120));
+        g2.setStroke(new BasicStroke((float) MapStyle.escalaTracoMapa(t, 2.0)));
         g2.draw(path);
     }
 
     private static void desenharTriangulo(Graphics2D g2, Path2D path, MapTransform t) {
-        g2.setColor(new Color(200, 40, 40));
+
+        // Estrutura principal
+        g2.setColor(new Color(180, 40, 40));
         g2.fill(path);
-        g2.setColor(Color.BLACK);
+        // Contorno
+        g2.setColor(new Color(60, 60, 60));
         g2.setStroke(new BasicStroke(MapStyle.escalaTracoMapa(t, 2.0)));
         g2.draw(path);
     }
 
     private static void desenharRocha(Graphics2D g2, Path2D path, MapTransform t) {
-        g2.setColor(new Color(110, 110, 110));
+        // Gradiente para dar volume à rocha
+        Rectangle bounds = path.getBounds();
+
+        GradientPaint gradiente = new GradientPaint(bounds.x, bounds.y, new Color(140, 140, 140), bounds.x + bounds.width, bounds.y + bounds.height, new Color(70, 70, 70));
+        g2.setPaint(gradiente);
         g2.fill(path);
-        g2.setColor(new Color(70, 70, 70));
-        g2.setStroke(new BasicStroke(MapStyle.escalaTracoMapa(t, 2.0)));
+
+        // Contorno principal
+        g2.setColor(new Color(55, 55, 55));
+        g2.setStroke(new BasicStroke(MapStyle.escalaTracoMapa(t, 2.2)));
         g2.draw(path);
+
+        // Pequenos detalhes para textura
+        g2.setStroke(new BasicStroke(MapStyle.escalaTracoMapa(t, 1.0)));
+        g2.setColor(new Color(180, 180, 180, 120));
+
+        for (int i = 0; i < 6; i++) {
+            int x1 = bounds.x + (int) (Math.random() * bounds.width);
+            int y1 = bounds.y + (int) (Math.random() * bounds.height);
+            int x2 = x1 + (int) (Math.random() * 12 - 6);
+            int y2 = y1 + (int) (Math.random() * 12 - 6);
+
+            if (path.contains(x1, y1) && path.contains(x2, y2)) {
+                g2.drawLine(x1, y1, x2, y2);
+            }
+        }
+        // Sombra
+        g2.setColor(new Color(0, 0, 0, 40));
+        g2.translate(3, 3);
+        g2.draw(path);
+        g2.translate(-3, -3);
     }
 
     private static void desenharIlha(Graphics2D g2, Path2D path, MapTransform t) {
-        g2.setColor(new Color(90, 170, 90));
+
+        // Areia da ilha
+        g2.setColor(new Color(210, 190, 120));
         g2.fill(path);
-        g2.setColor(new Color(40, 110, 40));
+
+        // Contorno da ilha
+        g2.setColor(new Color(120, 100, 60));
         g2.setStroke(new BasicStroke(MapStyle.escalaTracoMapa(t, 2.0)));
         g2.draw(path);
+
         desenharPalmeira(g2, path, t);
     }
 
     private static void desenharPalmeira(Graphics2D g2, Path2D path, MapTransform t) {
+
         Rectangle r = path.getBounds();
+
         double s = MapStyle.escalaIcone(t);
-        double x = r.x + r.width / 2.0;
-        double y = r.y + r.height / 2.0;
-        double alturaTronco = 25.0 * s;
-        double comprimentoFolha = 20.0 * s;
 
+        double x = r.getCenterX();
+        double y = r.getCenterY() + 6 * s;
+
+        double alturaTronco = 24.0 * s;
+        double comprimentoFolha = 18.0 * s;
+        // Pequena relva à volta da palmeira
+        double relvaSize = 40 * s;
+
+        g2.setColor(new Color(70, 150, 70));
+
+        g2.fill(new Ellipse2D.Double(x - relvaSize / 2.0, y - relvaSize / 2.0, relvaSize, relvaSize));
+        // Tronco
         g2.setColor(new Color(139, 69, 19));
-        g2.setStroke(new BasicStroke((float) Math.max(1.0, 3.0 * s)));
-        g2.draw(new Line2D.Double(x, y, x, y - alturaTronco));
 
+        g2.setStroke(new BasicStroke((float) Math.max(1.0, 3.0 * s)));
+
+        g2.draw(new Line2D.Double(x, y, x, y - alturaTronco));
+        // Folhas
         g2.setColor(new Color(34, 139, 34));
         g2.setStroke(new BasicStroke((float) Math.max(1.0, 2.0 * s)));
+
         for (int i = 0; i < 6; i++) {
             double angle = Math.toRadians(i * 60);
             double x2 = x + Math.cos(angle) * comprimentoFolha;
