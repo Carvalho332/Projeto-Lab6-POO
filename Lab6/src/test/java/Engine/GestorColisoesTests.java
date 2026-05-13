@@ -49,6 +49,40 @@ public class GestorColisoesTests {
         assertEquals(EstadoNavio.EM_MOVIMENTO, f.getEstado());
     }
 
+
+
+    @Test
+    public void testHaColisaoQuandoTrajetoriasSeCruzamMesmoComProximasPosicoesAfastadas() {
+        Porto origemA = TestSupport.porto("A", 0.0, 0.0);
+        Porto destinoA = TestSupport.porto("B", 10.0, 0.0);
+        Porto origemC = TestSupport.porto("C", 5.0, -5.0);
+        Porto destinoC = TestSupport.porto("D", 5.0, 5.0);
+
+        Navio n1 = new Navio("A1", origemA, new Viagem(0, destinoA, 10.0),
+                new Route(new Ponto[]{origemA.getPosicao(), destinoA.getPosicao()}));
+        Navio n2 = new Navio("C1", origemC, new Viagem(0, destinoC, 10.0),
+                new Route(new Ponto[]{origemC.getPosicao(), destinoC.getPosicao()}));
+
+        assertTrue(new GestorColisoes().haColisao(n1, n2));
+    }
+
+    @Test
+    public void testResolverRetomaNavioQuandoConflitoDesaparece() {
+        Navio a = navio("A12", 0.0, 0.0);
+        Navio f = navio("F9", 1.0, 1.0);
+        GestorColisoes gestor = new GestorColisoes();
+
+        gestor.resolver(List.of(a, f));
+        assertTrue(a.estaEmEspera());
+
+        a.avancar();
+        f.avancar();
+        gestor.resolver(List.of(a));
+
+        assertTrue(a.estaEmMovimento());
+        assertFalse(a.deveMostrarCirculoColisao());
+    }
+
     @Test
     public void testInvalidArguments() {
         GestorColisoes g = new GestorColisoes();

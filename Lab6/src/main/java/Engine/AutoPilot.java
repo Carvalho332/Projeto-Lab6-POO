@@ -9,6 +9,11 @@ public class AutoPilot {
     private final Ponto start;
     private final Ponto finish;
 
+    /**
+     * Responsabilidade: criar um piloto automático com ponto de partida e de chegada.
+     * @param start ponto de partida
+     * @param finish ponto de chegada
+     */
     public AutoPilot(Ponto start, Ponto finish) {
         if (start == null || finish == null) {
             throw new IllegalArgumentException("AutoPilot: pontos null");
@@ -17,10 +22,19 @@ public class AutoPilot {
         this.finish = finish;
     }
 
+    /**
+     * Responsabilidade: obter o ponto de partida.
+     * @return start
+     */
     public Ponto getStart() {
         return start;
     }
 
+
+    /**
+     * Responsabilidade: obter o ponto de chegada.
+     * @return finish
+     */
     public Ponto getFinish() {
         return finish;
     }

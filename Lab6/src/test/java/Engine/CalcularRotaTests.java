@@ -114,6 +114,45 @@ public class CalcularRotaTests {
         assertTrue(new CalcularRota().rotaBloqueada(rota, List.of(obstaculo)));
     }
 
+
+
+    @Test
+    public void testCalcularRetornaOptionalVazioQuandoOrigemEDestinoSaoOMesmoPorto() {
+        Porto a = TestSupport.porto("A", 0.0, 0.0);
+        MapaNavegacao mapa = new MapaNavegacao();
+        mapa.adicionarPorto(a);
+
+        assertTrue(new CalcularRota().calcular(a, a, mapa, new Vetor(0.0, 0.0), 1.0).isEmpty());
+        assertNull(new CalcularRota().rotaMaisRapida(a, a, mapa, new Vetor(0.0, 0.0), 1.0));
+    }
+
+    @Test
+    public void testRotaMaisRapidaPodeTrocarDeRotaEmIntersecao() {
+        Porto a = TestSupport.porto("A", 0.0, 0.0);
+        Porto b = TestSupport.porto("B", 5.0, 5.0);
+
+        MapaNavegacao mapa = new MapaNavegacao();
+        mapa.adicionarPorto(a);
+        mapa.adicionarPorto(b);
+        mapa.adicionarRota(new Route(new Ponto[]{a.getPosicao(), new Ponto(5.0, 0.0), new Ponto(10.0, 0.0)}));
+        mapa.adicionarRota(new Route(new Ponto[]{new Ponto(5.0, -5.0), new Ponto(5.0, 0.0), b.getPosicao()}));
+
+        Route r = new CalcularRota().rotaMaisRapida(a, b, mapa, new Vetor(0.0, 0.0), 1.0);
+
+        assertNotNull(r);
+        TestSupport.assertPonto(r.getInicio(), 0.0, 0.0);
+        TestSupport.assertPonto(r.getFim(), 5.0, 5.0);
+        assertTrue(r.contemPonto(new Ponto(5.0, 0.0)));
+        assertEquals(10.0, r.comprimento(), EPS);
+    }
+
+    @Test
+    public void testRotaBloqueadaValidaObstaculosNull() {
+        Route rota = new Route(new Ponto[] { new Ponto(0.0, 0.0), new Ponto(10.0, 0.0) });
+        assertThrows(IllegalArgumentException.class,
+                () -> new CalcularRota().rotaBloqueada(rota, java.util.Arrays.asList(new Circulo(new Ponto(1.0, 1.0), 0.5), null)));
+    }
+
     @Test
     public void testInvalidArguments() {
         CalcularRota calc = new CalcularRota();

@@ -52,6 +52,37 @@ public class InfoNavioTests {
         assertNotNull(info.getVelocidadeVetorial());
     }
 
+
+
+    @Test
+    public void testHelpersDeEstado() {
+        InfoNavio movimento = new InfoNavio("A0", new Ponto(0.0, 0.0), EstadoNavio.EM_MOVIMENTO, false);
+        InfoNavio espera = new InfoNavio("A1", new Ponto(0.0, 0.0), EstadoNavio.EM_ESPERA, true);
+        InfoNavio chegou = new InfoNavio("A2", new Ponto(0.0, 0.0), EstadoNavio.CHEGOU, false);
+
+        assertTrue(movimento.estaEmMovimento());
+        assertFalse(movimento.estaEmEspera());
+        assertFalse(movimento.chegou());
+
+        assertTrue(espera.estaEmEspera());
+        assertFalse(espera.estaEmMovimento());
+
+        assertTrue(chegou.chegou());
+    }
+
+    @Test
+    public void testConstructorFromNavioEmEsperaTemVelocidadeZero() {
+        Porto a = TestSupport.porto("A", 0.0, 0.0);
+        Porto b = TestSupport.porto("B", 10.0, 0.0);
+        Navio n = new Navio("A0", a, new Viagem(0, b, 2.0), new Route(new Ponto[] { a.getPosicao(), b.getPosicao() }));
+        n.esperar();
+
+        InfoNavio info = new InfoNavio(n, new Vetor(0.5, 0.0));
+
+        assertTrue(info.temVelocidadeVetorial());
+        TestSupport.assertVetor(info.getVelocidadeVetorial(), 0.0, 0.0);
+    }
+
     @Test
     public void testInvalidInfoNavio() {
         assertThrows(IllegalArgumentException.class,

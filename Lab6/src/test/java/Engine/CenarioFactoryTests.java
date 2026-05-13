@@ -18,6 +18,7 @@ public class CenarioFactoryTests {
     public void testCenarioCumpreMinimosDoEnunciado() {
         MapaNavegacao mapa = CenarioFactory.criarMapaDemo(123L);
 
+        assertTrue(mapa.cumpreMinimosEnunciado());
         assertTrue(mapa.getPortos().size() >= 4);
         assertTrue(mapa.getRotas().size() >= 6);
         assertTrue(mapa.getObstaculosFixos().size() >= 4);
@@ -25,6 +26,7 @@ public class CenarioFactoryTests {
 
         for (Route rota : mapa.getRotas()) {
             assertTrue(rota.getNumeroPontos() >= 4);
+            assertTrue(mapa.rotaLigaPortos(rota));
         }
     }
 
@@ -69,6 +71,32 @@ public class CenarioFactoryTests {
                 .orElseThrow()).getCentro();
 
         assertTrue(centroInicial.igual(centroFinal));
+    }
+
+
+
+    @Test
+    public void testCenarioTemViagensEmEspera() {
+        MapaNavegacao mapa = CenarioFactory.criarMapaDemo(321L);
+
+        int totalViagens = 0;
+        for (Porto porto : mapa.getPortos()) {
+            totalViagens += porto.getListaEspera().size();
+        }
+
+        assertTrue(totalViagens >= mapa.getPortos().size() * 2);
+    }
+
+    @Test
+    public void testCriarSimuladorDemoProduzEstadoInicialCoerente() {
+        Simulador simulador = CenarioFactory.criarSimuladorDemo(123L);
+        EstadoSimulacao estado = simulador.iniciar();
+
+        assertEquals(0, estado.getTempoAtual());
+        assertTrue(estado.getNavios().isEmpty());
+        assertTrue(estado.getPortos().size() >= 4);
+        assertTrue(estado.getRotas().size() >= 6);
+        assertTrue(estado.getObstaculos().size() >= 6);
     }
 
     private boolean intersetaAlgumaRota(ObstaculoMovel obstaculo, MapaNavegacao mapa) {

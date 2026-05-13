@@ -119,8 +119,7 @@ public class CalcularRota implements EstrategiaCalculoRota {
         }
     }
 
-    private void adicionarLigacoesDaRota(Grafo grafo, Route rota, MapaNavegacao mapa,
-                                         Vetor corrente, double vl) {
+    private void adicionarLigacoesDaRota(Grafo grafo, Route rota, MapaNavegacao mapa, Vetor corrente, double vl) {
         for (int i = 0; i < rota.getNumeroSegmentos(); i++) {
             SegmentoReta segmento = rota.getSegmento(i);
             List<Ponto> pontosDoSegmento = pontosRelevantesDoSegmento(segmento, rota, mapa);

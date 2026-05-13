@@ -159,6 +159,84 @@ public class RouteTests {
         assertEquals(r.comprimento(), inv.comprimento(), EPS);
     }
 
+
+
+    @Test
+    public void testGetSegmentosAndComprimentoSegmento() {
+        Route r = new Route(new Ponto[] {
+                new Ponto(0.0, 0.0),
+                new Ponto(3.0, 4.0),
+                new Ponto(6.0, 4.0)
+        });
+
+        assertEquals(2, r.getNumeroSegmentos());
+        assertEquals(5.0, r.comprimentoSegmento(0), EPS);
+        assertEquals(3.0, r.comprimentoSegmento(1), EPS);
+        assertEquals(2, r.getSegmentos().size());
+        assertThrows(UnsupportedOperationException.class, () -> r.getSegmentos().add(r.getSegmento(0)));
+    }
+
+    @Test
+    public void testContemPontoETempoAtePonto() {
+        Route r = new Route(new Ponto[] {
+                new Ponto(0.0, 0.0),
+                new Ponto(4.0, 0.0),
+                new Ponto(4.0, 3.0)
+        });
+
+        assertTrue(r.contemPonto(new Ponto(2.0, 0.0)));
+        assertTrue(r.contemPonto(new Ponto(4.0, 1.5)));
+        assertFalse(r.contemPonto(new Ponto(2.0, 2.0)));
+        assertEquals(2.5, r.tempoAtePonto(new Ponto(4.0, 1.0), 2.0), EPS);
+    }
+
+    @Test
+    public void testSpeedCompensaCorrenteEmCadaSegmento() {
+        Route r = new Route(new Ponto[] {
+                new Ponto(0.0, 0.0),
+                new Ponto(4.0, 0.0),
+                new Ponto(4.0, 3.0)
+        });
+
+        Vetor[] velocidades = r.speed(new Vetor(0.25, -0.50), 2.0);
+
+        assertEquals(2, velocidades.length);
+        TestSupport.assertVetor(velocidades[0], 1.75, 0.50);
+        TestSupport.assertVetor(velocidades[1], -0.25, 2.50);
+    }
+
+    @Test
+    public void testSubRota() {
+        Route r = new Route(new Ponto[] {
+                new Ponto(0.0, 0.0),
+                new Ponto(4.0, 0.0),
+                new Ponto(4.0, 3.0)
+        });
+
+        Route sub = r.subRota(new Ponto(2.0, 0.0), new Ponto(4.0, 2.0));
+
+        assertEquals(3, sub.getNumeroPontos());
+        TestSupport.assertPonto(sub.getPonto(0), 2.0, 0.0);
+        TestSupport.assertPonto(sub.getPonto(1), 4.0, 0.0);
+        TestSupport.assertPonto(sub.getPonto(2), 4.0, 2.0);
+        assertEquals(4.0, sub.comprimento(), EPS);
+    }
+
+    @Test
+    public void testSubRotaInvertida() {
+        Route r = new Route(new Ponto[] {
+                new Ponto(0.0, 0.0),
+                new Ponto(4.0, 0.0),
+                new Ponto(4.0, 3.0)
+        });
+
+        Route sub = r.subRota(new Ponto(4.0, 2.0), new Ponto(2.0, 0.0));
+
+        TestSupport.assertPonto(sub.getInicio(), 4.0, 2.0);
+        TestSupport.assertPonto(sub.getFim(), 2.0, 0.0);
+        assertEquals(4.0, sub.comprimento(), EPS);
+    }
+
     @Test
     public void testInvalidRoute() {
         assertThrows(IllegalArgumentException.class, () -> new Route(null));
