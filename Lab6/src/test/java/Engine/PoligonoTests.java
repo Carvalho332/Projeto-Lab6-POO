@@ -4,16 +4,18 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 /**
- * Responsabilidade: testar a classe Poligono, validando vértices, invariantes e interseções com segmentos de reta.
- *
- * Autores:
- * - Francisco Mestre Nº 76914
- * - Diogo Carvalho Nº 90247
- * - Rudy Silva Nº 88487
- *
- * Data: 26/04/2026
+ * Responsabilidade: suportar uma responsabilidade específica do simulador de navegação.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public class PoligonoTests {
+    /**
+ * Responsabilidade: realizar a operação quadrado como poligono no contexto da classe PoligonoTests.
+ * @return objeto resultante da operação.
+ */
     private Poligono quadradoComoPoligono() {
         return new Poligono(new Ponto[] {
                 new Ponto(0.0, 0.0),
@@ -23,6 +25,9 @@ public class PoligonoTests {
         });
     }
 
+    /**
+ * Responsabilidade: validar constructor and getters através de um teste unitário.
+ */
     @Test
     public void testConstructorAndGetters() {
         Poligono p = quadradoComoPoligono();
@@ -32,6 +37,9 @@ public class PoligonoTests {
         TestSupport.assertPonto(p.getVertice(2), 2.0, 2.0);
     }
 
+    /**
+ * Responsabilidade: validar get vertices returns copy através de um teste unitário.
+ */
     @Test
     public void testGetVerticesReturnsCopy() {
         Poligono p = quadradoComoPoligono();
@@ -41,6 +49,9 @@ public class PoligonoTests {
         TestSupport.assertPonto(p.getVertice(0), 0.0, 0.0);
     }
 
+    /**
+ * Responsabilidade: validar intersect segmento através de um teste unitário.
+ */
     @Test
     public void testIntersectSegmento() {
         Poligono p = quadradoComoPoligono();
@@ -54,6 +65,9 @@ public class PoligonoTests {
         TestSupport.assertContainsPonto(inter, 2.0, 1.0);
     }
 
+    /**
+ * Responsabilidade: validar invalid polygon através de um teste unitário.
+ */
     @Test
     public void testInvalidPolygon() {
         assertThrows(IllegalArgumentException.class, () -> new Poligono(null));

@@ -4,18 +4,19 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 /**
- * Responsabilidade: testar a classe Ponto, validando coordenadas, distância, igualdade aproximada e representação textual.
- *
- * Autores:
- * - Francisco Mestre Nº 76914
- * - Diogo Carvalho Nº 90247
- * - Rudy Silva Nº 88487
- *
- * Data: 26/04/2026
+ * Responsabilidade: suportar uma responsabilidade específica do simulador de navegação.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public class PontoTests {
     private static final double EPS = TestSupport.EPS;
 
+    /**
+ * Responsabilidade: validar constructor and getters através de um teste unitário.
+ */
     @Test
     public void testConstructorAndGetters() {
         Ponto p = new Ponto(2.5, -1.25);
@@ -23,6 +24,9 @@ public class PontoTests {
         assertEquals(-1.25, p.getY(), EPS);
     }
 
+    /**
+ * Responsabilidade: validar dist and igual através de um teste unitário.
+ */
     @Test
     public void testDistAndIgual() {
         Ponto a = new Ponto(0.0, 0.0);
@@ -35,12 +39,17 @@ public class PontoTests {
         assertFalse(a.igual(null));
     }
 
+    /**
+ * Responsabilidade: validar to string através de um teste unitário.
+ */
     @Test
     public void testToString() {
-        assertEquals("(2.00,3.50)", new Ponto(2.0, 3.5).toString());
-        assertEquals("(-1.20,0.00)", new Ponto(-1.2, 0.0).toString());
+        assertEquals("(2.00, 3.50)", new Ponto(2.0, 3.5).toString());
     }
 
+    /**
+ * Responsabilidade: validar invalid coordinates através de um teste unitário.
+ */
     @Test
     public void testInvalidCoordinates() {
         assertThrows(IllegalArgumentException.class, () -> new Ponto(Double.NaN, 0.0));

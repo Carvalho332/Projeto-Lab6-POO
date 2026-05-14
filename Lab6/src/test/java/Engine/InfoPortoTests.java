@@ -6,16 +6,17 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 /**
- * Responsabilidade: testar a classe InfoPorto, validando a informação enviada pelo Engine ao GUI sobre cada porto e respetiva lista de espera.
- *
- * Autores:
- * - Francisco Mestre Nº 76914
- * - Diogo Carvalho Nº 90247
- * - Rudy Silva Nº 88487
- *
- * Data: 26/04/2026
+ * Responsabilidade: suportar uma responsabilidade específica do simulador de navegação.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public class InfoPortoTests {
+    /**
+ * Responsabilidade: validar constructor and getters através de um teste unitário.
+ */
     @Test
     public void testConstructorAndGetters() {
         Porto destino = TestSupport.porto("B", 10.0, 0.0);
@@ -32,6 +33,9 @@ public class InfoPortoTests {
         assertSame(viagem, info.getViagensEmEspera().get(0));
     }
 
+    /**
+ * Responsabilidade: validar constructor from porto através de um teste unitário.
+ */
     @Test
     public void testConstructorFromPorto() {
         Porto a = TestSupport.porto("A", 0.0, 0.0);
@@ -44,6 +48,9 @@ public class InfoPortoTests {
         assertEquals(1, info.getViagensEmEspera().size());
     }
 
+    /**
+ * Responsabilidade: validar viagens em espera is unmodifiable através de um teste unitário.
+ */
     @Test
     public void testViagensEmEsperaIsUnmodifiable() {
         InfoPorto info = new InfoPorto("A", new Ponto(0.0, 0.0), List.of());
@@ -52,6 +59,9 @@ public class InfoPortoTests {
                 () -> info.getViagensEmEspera().add(new InfoViagem(0, "B", 1.0)));
     }
 
+    /**
+ * Responsabilidade: validar invalid info porto através de um teste unitário.
+ */
     @Test
     public void testInvalidInfoPorto() {
         assertThrows(IllegalArgumentException.class, () -> new InfoPorto(null, new Ponto(0.0, 0.0), List.of()));

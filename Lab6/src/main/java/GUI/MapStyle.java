@@ -3,7 +3,12 @@ package GUI;
 import java.awt.Color;
 
 /**
- * Constantes visuais e pequenas funções auxiliares usadas pelos renderers do mapa.
+ * Responsabilidade: centralizar dimensões e cores usadas no desenho do mapa.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 final class MapStyle {
     static final int PADDING = 50;
@@ -20,6 +25,9 @@ final class MapStyle {
     static final Color COR_NAVIO_ESPERA = new Color(230, 80, 55);
     static final Color COR_NAVIO_CHEGOU = new Color(90, 90, 90);
 
+    /**
+ * Responsabilidade: construir uma instância de MapStyle, validando os dados recebidos para preservar os invariantes.
+ */
     private MapStyle() {
     }
 

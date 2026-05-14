@@ -4,18 +4,19 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 /**
- * Responsabilidade: testar a classe Circulo, validando construtores, invariantes e interseções com segmentos de reta.
- *
- * Autores:
- * - Francisco Mestre Nº 76914
- * - Diogo Carvalho Nº 90247
- * - Rudy Silva Nº 88487
- *
- * Data: 26/04/2026
+ * Responsabilidade: suportar uma responsabilidade específica do simulador de navegação.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public class CirculoTests {
     private static final double EPS = TestSupport.EPS;
 
+    /**
+ * Responsabilidade: validar constructor and getters através de um teste unitário.
+ */
     @Test
     public void testConstructorAndGetters() {
         Ponto c = new Ponto(1.0, 2.0);
@@ -25,6 +26,9 @@ public class CirculoTests {
         assertEquals(3.0, circ.getRaio(), EPS);
     }
 
+    /**
+ * Responsabilidade: validar intersect diameter através de um teste unitário.
+ */
     @Test
     public void testIntersectDiameter() {
         Circulo circ = new Circulo(new Ponto(0.0, 0.0), 1.0);
@@ -38,6 +42,9 @@ public class CirculoTests {
         TestSupport.assertContainsPonto(inter, 1.0, 0.0);
     }
 
+    /**
+ * Responsabilidade: validar intersect tangent and no intersection através de um teste unitário.
+ */
     @Test
     public void testIntersectTangentAndNoIntersection() {
         Circulo circ = new Circulo(new Ponto(0.0, 0.0), 1.0);
@@ -50,6 +57,9 @@ public class CirculoTests {
         assertNull(circ.intersect(new SegmentoReta(new Ponto(2.0, 2.0), new Ponto(3.0, 2.0))));
     }
 
+    /**
+ * Responsabilidade: validar invalid circle através de um teste unitário.
+ */
     @Test
     public void testInvalidCircle() {
         assertThrows(IllegalArgumentException.class, () -> new Circulo(null, 1.0));

@@ -5,8 +5,18 @@ import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 import java.util.Locale;
 
-/** Desenha a grelha e a informação de zoom. */
+/**
+ * Responsabilidade: desenhar a grelha de referência do mapa no painel gráfico.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
+ */
 final class GridRenderer {
+    /**
+ * Responsabilidade: construir uma instância de GridRenderer, validando os dados recebidos para preservar os invariantes.
+ */
     private GridRenderer() {
     }
 

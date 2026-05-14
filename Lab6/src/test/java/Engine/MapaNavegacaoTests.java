@@ -6,17 +6,18 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 /**
- * Responsabilidade: testar a classe MapaNavegacao, validando a gestão de portos, rotas, obstáculos fixos e obstáculos móveis.
- *
- * Autores:
- * - Francisco Mestre Nº 76914
- * - Diogo Carvalho Nº 90247
- * - Rudy Silva Nº 88487
- *
- * Data: 26/04/2026
+ * Responsabilidade: suportar uma responsabilidade específica do simulador de navegação.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public class MapaNavegacaoTests {
 
+    /**
+ * Responsabilidade: validar adicionar and getters através de um teste unitário.
+ */
     @Test
     public void testAdicionarAndGetters() {
         Porto a = TestSupport.porto("A", 0.0, 0.0);
@@ -38,6 +39,9 @@ public class MapaNavegacaoTests {
         assertNull(mapa.getPortoPorNome("Z"));
     }
 
+    /**
+ * Responsabilidade: validar definir obstaculos moveis através de um teste unitário.
+ */
     @Test
     public void testDefinirObstaculosMoveis() {
         MapaNavegacao mapa = new MapaNavegacao();
@@ -51,6 +55,9 @@ public class MapaNavegacaoTests {
         assertEquals(1, mapa.getTodosObstaculos().size());
     }
 
+    /**
+ * Responsabilidade: validar lists are unmodifiable através de um teste unitário.
+ */
     @Test
     public void testListsAreUnmodifiable() {
         MapaNavegacao mapa = new MapaNavegacao();
@@ -61,6 +68,9 @@ public class MapaNavegacaoTests {
                 () -> mapa.getRotas().add(new Route(new Ponto[] { new Ponto(0.0, 0.0), new Ponto(1.0, 0.0) })));
     }
 
+    /**
+ * Responsabilidade: validar invalid arguments através de um teste unitário.
+ */
     @Test
     public void testInvalidArguments() {
         MapaNavegacao mapa = new MapaNavegacao();

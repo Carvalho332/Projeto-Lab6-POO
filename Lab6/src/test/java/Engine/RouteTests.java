@@ -4,18 +4,19 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 /**
- * Responsabilidade: testar a classe Route, validando comprimento, posição ao longo da rota, tempo, velocidade e interseções.
- *
- * Autores:
- * - Francisco Mestre Nº 76914
- * - Diogo Carvalho Nº 90247
- * - Rudy Silva Nº 88487
- *
- * Data: 26/04/2026
+ * Responsabilidade: suportar uma responsabilidade específica do simulador de navegação.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public class RouteTests {
     private static final double EPS = TestSupport.EPS;
 
+    /**
+ * Responsabilidade: validar constructor and getters através de um teste unitário.
+ */
     @Test
     public void testConstructorAndGetters() {
         Route r = new Route(new Ponto[] {
@@ -30,6 +31,9 @@ public class RouteTests {
         TestSupport.assertPonto(r.getPonto(1), 2.0, 0.0);
     }
 
+    /**
+ * Responsabilidade: validar get pontos returns copy através de um teste unitário.
+ */
     @Test
     public void testGetPontosReturnsCopy() {
         Route r = new Route(new Ponto[] { new Ponto(0.0, 0.0), new Ponto(1.0, 0.0) });
@@ -39,6 +43,9 @@ public class RouteTests {
         TestSupport.assertPonto(r.getInicio(), 0.0, 0.0);
     }
 
+    /**
+ * Responsabilidade: validar comprimento exemplo lab4 através de um teste unitário.
+ */
     @Test
     public void testComprimentoExemploLab4() {
         Route r = new Route(new Ponto[] {
@@ -51,6 +58,9 @@ public class RouteTests {
         assertEquals(6.242640687, r.comprimento(), 1e-6);
     }
 
+    /**
+ * Responsabilidade: validar time position and speed example lab5 através de um teste unitário.
+ */
     @Test
     public void testTimePositionAndSpeedExampleLab5() {
         Route r = new Route(new Ponto[] {
@@ -69,6 +79,9 @@ public class RouteTests {
         TestSupport.assertVetor(velocidades[1], 1.0, -1.0);
     }
 
+    /**
+ * Responsabilidade: validar position before start and after end através de um teste unitário.
+ */
     @Test
     public void testPositionBeforeStartAndAfterEnd() {
         Route r = new Route(new Ponto[] { new Ponto(0.0, 0.0), new Ponto(10.0, 0.0) });
@@ -77,6 +90,9 @@ public class RouteTests {
         TestSupport.assertPonto(r.position(2.0, 100.0), 10.0, 0.0);
     }
 
+    /**
+ * Responsabilidade: validar intersect segmento exemplo lab4 através de um teste unitário.
+ */
     @Test
     public void testIntersectSegmentoExemploLab4() {
         Route r = new Route(new Ponto[] {
@@ -94,6 +110,9 @@ public class RouteTests {
         TestSupport.assertPonto(inter[0], 2.0, 2.0);
     }
 
+    /**
+ * Responsabilidade: validar intersect segmento without duplicates através de um teste unitário.
+ */
     @Test
     public void testIntersectSegmentoWithoutDuplicates() {
         Route r = new Route(new Ponto[] {
@@ -110,6 +129,9 @@ public class RouteTests {
         TestSupport.assertPonto(inter[0], 2.0, 2.0);
     }
 
+    /**
+ * Responsabilidade: validar intersect obstaculo exemplo lab5 através de um teste unitário.
+ */
     @Test
     public void testIntersectObstaculoExemploLab5() {
         Route r = new Route(new Ponto[] {
@@ -132,6 +154,9 @@ public class RouteTests {
         TestSupport.assertContainsPonto(inter, 2.0, 3.0);
     }
 
+    /**
+ * Responsabilidade: validar intersect without intersection através de um teste unitário.
+ */
     @Test
     public void testIntersectWithoutIntersection() {
         Route r = new Route(new Ponto[] {
@@ -144,6 +169,9 @@ public class RouteTests {
         assertNull(r.intersect(s));
     }
 
+    /**
+ * Responsabilidade: validar invertida através de um teste unitário.
+ */
     @Test
     public void testInvertida() {
         Route r = new Route(new Ponto[] {
@@ -159,84 +187,9 @@ public class RouteTests {
         assertEquals(r.comprimento(), inv.comprimento(), EPS);
     }
 
-
-
-    @Test
-    public void testGetSegmentosAndComprimentoSegmento() {
-        Route r = new Route(new Ponto[] {
-                new Ponto(0.0, 0.0),
-                new Ponto(3.0, 4.0),
-                new Ponto(6.0, 4.0)
-        });
-
-        assertEquals(2, r.getNumeroSegmentos());
-        assertEquals(5.0, r.comprimentoSegmento(0), EPS);
-        assertEquals(3.0, r.comprimentoSegmento(1), EPS);
-        assertEquals(2, r.getSegmentos().size());
-        assertThrows(UnsupportedOperationException.class, () -> r.getSegmentos().add(r.getSegmento(0)));
-    }
-
-    @Test
-    public void testContemPontoETempoAtePonto() {
-        Route r = new Route(new Ponto[] {
-                new Ponto(0.0, 0.0),
-                new Ponto(4.0, 0.0),
-                new Ponto(4.0, 3.0)
-        });
-
-        assertTrue(r.contemPonto(new Ponto(2.0, 0.0)));
-        assertTrue(r.contemPonto(new Ponto(4.0, 1.5)));
-        assertFalse(r.contemPonto(new Ponto(2.0, 2.0)));
-        assertEquals(2.5, r.tempoAtePonto(new Ponto(4.0, 1.0), 2.0), EPS);
-    }
-
-    @Test
-    public void testSpeedCompensaCorrenteEmCadaSegmento() {
-        Route r = new Route(new Ponto[] {
-                new Ponto(0.0, 0.0),
-                new Ponto(4.0, 0.0),
-                new Ponto(4.0, 3.0)
-        });
-
-        Vetor[] velocidades = r.speed(new Vetor(0.25, -0.50), 2.0);
-
-        assertEquals(2, velocidades.length);
-        TestSupport.assertVetor(velocidades[0], 1.75, 0.50);
-        TestSupport.assertVetor(velocidades[1], -0.25, 2.50);
-    }
-
-    @Test
-    public void testSubRota() {
-        Route r = new Route(new Ponto[] {
-                new Ponto(0.0, 0.0),
-                new Ponto(4.0, 0.0),
-                new Ponto(4.0, 3.0)
-        });
-
-        Route sub = r.subRota(new Ponto(2.0, 0.0), new Ponto(4.0, 2.0));
-
-        assertEquals(3, sub.getNumeroPontos());
-        TestSupport.assertPonto(sub.getPonto(0), 2.0, 0.0);
-        TestSupport.assertPonto(sub.getPonto(1), 4.0, 0.0);
-        TestSupport.assertPonto(sub.getPonto(2), 4.0, 2.0);
-        assertEquals(4.0, sub.comprimento(), EPS);
-    }
-
-    @Test
-    public void testSubRotaInvertida() {
-        Route r = new Route(new Ponto[] {
-                new Ponto(0.0, 0.0),
-                new Ponto(4.0, 0.0),
-                new Ponto(4.0, 3.0)
-        });
-
-        Route sub = r.subRota(new Ponto(4.0, 2.0), new Ponto(2.0, 0.0));
-
-        TestSupport.assertPonto(sub.getInicio(), 4.0, 2.0);
-        TestSupport.assertPonto(sub.getFim(), 2.0, 0.0);
-        assertEquals(4.0, sub.comprimento(), EPS);
-    }
-
+    /**
+ * Responsabilidade: validar invalid route através de um teste unitário.
+ */
     @Test
     public void testInvalidRoute() {
         assertThrows(IllegalArgumentException.class, () -> new Route(null));

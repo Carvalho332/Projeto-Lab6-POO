@@ -8,8 +8,18 @@ import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 import java.util.List;
 
-/** Desenha as rotas do mapa. */
+/**
+ * Responsabilidade: desenhar as rotas navegáveis no mapa.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
+ */
 final class RouteRenderer {
+    /**
+ * Responsabilidade: construir uma instância de RouteRenderer, validando os dados recebidos para preservar os invariantes.
+ */
     private RouteRenderer() {
     }
 

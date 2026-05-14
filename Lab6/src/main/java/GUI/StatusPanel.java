@@ -25,10 +25,12 @@ import java.awt.Font;
 import java.util.Locale;
 
 /**
- * Responsabilidade: mostrar o estado atual da simulação em tabelas estruturadas.
- *
- * O painel recebe um EstadoSimulacao produzido pelo Engine e apenas apresenta os
- * dados ao utilizador. Não calcula posições, rotas, colisões ou listas de espera.
+ * Responsabilidade: mostrar em tabelas o resumo da simulação, os navios ativos e as viagens em espera.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public class StatusPanel extends JPanel {
     private static final Font FONTE_NORMAL = new Font("Arial", Font.PLAIN, 12);
@@ -57,12 +59,12 @@ public class StatusPanel extends JPanel {
     private static final String TEXTO_VAZIO = "-";
 
     private static final String[] COLUNAS_RESUMO = {"Campo", "Valor"};
-    private static final String[] COLUNAS_NAVIOS = {"Navio", "Estado", "X", "Y", "Vx", "Vy", "Colisão"};
-    private static final String[] COLUNAS_PORTOS = {"Porto", "Saída", "Destino", "Velocidade"};
+    private static final String[] COLUNAS_NAVIOS = {"Navio", "Estado", "X", "Y", "Vel. Lin.", "Vx", "Vy", "Colisão"};
+    private static final String[] COLUNAS_PORTOS = {"Porto", "Viagem em espera"};
 
     private static final int[] LARGURAS_RESUMO = {110, 280};
-    private static final int[] LARGURAS_NAVIOS = {50, 110, 50, 50, 50, 50, 65};
-    private static final int[] LARGURAS_PORTOS = {80, 80, 150, 115};
+    private static final int[] LARGURAS_NAVIOS = {50, 95, 45, 45, 65, 50, 50, 65};
+    private static final int[] LARGURAS_PORTOS = {80, 340};
 
     private final JLabel mensagemNavios;
     private final JLabel mensagemPortos;
@@ -78,6 +80,9 @@ public class StatusPanel extends JPanel {
     private final JScrollPane scrollNavios;
     private final JScrollPane scrollPortos;
 
+    /**
+ * Responsabilidade: construir uma instância de StatusPanel, validando os dados recebidos para preservar os invariantes.
+ */
     public StatusPanel() {
         setLayout(new BorderLayout());
         setBorder(criarBordaTitulo(TITULO_ESTADO));
@@ -107,10 +112,9 @@ public class StatusPanel extends JPanel {
     }
 
     /**
-     * Atualiza o painel com o estado mais recente da simulação.
-     *
-     * @param estado estado produzido pelo Engine; se for null, limpa as tabelas
-     */
+ * Responsabilidade: preencher as tabelas do painel com o estado mais recente da simulação.
+ * @param estado estado da simulação recebido do Engine.
+ */
     public void setEstado(EstadoSimulacao estado) {
         limparTabelas();
 
@@ -126,6 +130,10 @@ public class StatusPanel extends JPanel {
         atualizarTabelaPortos(estado);
     }
 
+    /**
+ * Responsabilidade: criar conteudo com a configuração necessária.
+ * @return objeto resultante da operação.
+ */
     private JPanel criarConteudo() {
         JPanel conteudo = new JPanel();
         conteudo.setLayout(new BoxLayout(conteudo, BoxLayout.Y_AXIS));
@@ -140,23 +148,39 @@ public class StatusPanel extends JPanel {
         return conteudo;
     }
 
+    /**
+ * Responsabilidade: criar borda titulo com a configuração necessária.
+ * @param titulo título da secção visual.
+ * @return objeto resultante da operação.
+ */
     private TitledBorder criarBordaTitulo(String titulo) {
         TitledBorder border = BorderFactory.createTitledBorder(titulo);
         border.setTitleFont(FONTE_TITULO_SECCAO);
         return border;
     }
 
+    /**
+ * Responsabilidade: criar painel resumo com a configuração necessária.
+ * @return objeto resultante da operação.
+ */
     private JPanel criarPainelResumo() {
         JPanel painel = new JPanel(new BorderLayout());
         painel.setBorder(criarBordaTitulo(TITULO_RESUMO));
         painel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        painel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 82));
+        painel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 112));
 
         painel.add(tabelaResumo, BorderLayout.CENTER);
 
         return painel;
     }
 
+    /**
+ * Responsabilidade: criar painel com tabela com a configuração necessária.
+ * @param titulo título da secção visual.
+ * @param scroll componente de scroll associado à tabela.
+ * @param mensagem label de mensagem alternativa à tabela.
+ * @return objeto resultante da operação.
+ */
     private JPanel criarPainelComTabela(String titulo, JScrollPane scroll, JLabel mensagem) {
         JPanel painel = new JPanel(new BorderLayout());
         painel.setBorder(criarBordaTitulo(titulo));
@@ -168,6 +192,12 @@ public class StatusPanel extends JPanel {
         return painel;
     }
 
+    /**
+ * Responsabilidade: criar scroll tabela com a configuração necessária.
+ * @param tabela tabela Swing a configurar.
+ * @param alturaPreferida altura preferida usado pelo método para cumprir a responsabilidade descrita.
+ * @return objeto resultante da operação.
+ */
     private JScrollPane criarScrollTabela(JTable tabela, int alturaPreferida) {
         JScrollPane scroll = new JScrollPane(tabela);
 
@@ -185,6 +215,11 @@ public class StatusPanel extends JPanel {
         return scroll;
     }
 
+    /**
+ * Responsabilidade: criar label mensagem com a configuração necessária.
+ * @param texto texto apresentado no componente gráfico.
+ * @return objeto resultante da operação.
+ */
     private JLabel criarLabelMensagem(String texto) {
         JLabel label = new JLabel(texto, SwingConstants.CENTER);
         label.setFont(FONTE_NORMAL);
@@ -193,8 +228,19 @@ public class StatusPanel extends JPanel {
         return label;
     }
 
+    /**
+ * Responsabilidade: criar modelo com a configuração necessária.
+ * @param colunas colunas usado pelo método para cumprir a responsabilidade descrita.
+ * @return objeto resultante da operação.
+ */
     private DefaultTableModel criarModelo(String[] colunas) {
         return new DefaultTableModel(colunas, 0) {
+            /**
+ * Responsabilidade: indicar se a condição is cell editable se verifica no estado atual.
+ * @param row row usado pelo método para cumprir a responsabilidade descrita.
+ * @param column column usado pelo método para cumprir a responsabilidade descrita.
+ * @return true se a condição se verificar; false caso contrário.
+ */
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -202,6 +248,11 @@ public class StatusPanel extends JPanel {
         };
     }
 
+    /**
+ * Responsabilidade: criar tabela resumo com a configuração necessária.
+ * @param modelo modelo de dados associado à tabela.
+ * @return objeto resultante da operação.
+ */
     private JTable criarTabelaResumo(DefaultTableModel modelo) {
         JTable tabela = new JTable(modelo);
 
@@ -214,6 +265,11 @@ public class StatusPanel extends JPanel {
         return tabela;
     }
 
+    /**
+ * Responsabilidade: criar tabela com a configuração necessária.
+ * @param modelo modelo de dados associado à tabela.
+ * @return objeto resultante da operação.
+ */
     private JTable criarTabela(DefaultTableModel modelo) {
         JTable tabela = new JTable(modelo);
 
@@ -232,6 +288,10 @@ public class StatusPanel extends JPanel {
         return tabela;
     }
 
+    /**
+ * Responsabilidade: configurar estilo base tabela de acordo com o aspeto definido para o GUI.
+ * @param tabela tabela Swing a configurar.
+ */
     private void configurarEstiloBaseTabela(JTable tabela) {
         tabela.setFont(FONTE_NORMAL);
         tabela.setRowHeight(ALTURA_LINHA);
@@ -242,6 +302,10 @@ public class StatusPanel extends JPanel {
         tabela.setBorder(BorderFactory.createLineBorder(COR_GRELHA));
     }
 
+    /**
+ * Responsabilidade: configurar cabecalho de acordo com o aspeto definido para o GUI.
+ * @param tabela tabela Swing a configurar.
+ */
     private void configurarCabecalho(JTable tabela) {
         JTableHeader header = tabela.getTableHeader();
 
@@ -251,39 +315,72 @@ public class StatusPanel extends JPanel {
         header.setDefaultRenderer(new HeaderRenderer(tabela));
     }
 
+    /**
+ * Responsabilidade: configurar larguras de acordo com o aspeto definido para o GUI.
+ * @param tabela tabela Swing a configurar.
+ * @param larguras larguras pretendidas para as colunas.
+ */
     private void configurarLarguras(JTable tabela, int[] larguras) {
         for (int i = 0; i < larguras.length; i++) {
             definirLarguraColuna(tabela, i, larguras[i]);
         }
     }
 
+    /**
+ * Responsabilidade: realizar a operação definir largura coluna no contexto da classe StatusPanel.
+ * @param tabela tabela Swing a configurar.
+ * @param indice índice do elemento a obter ou configurar.
+ * @param largura largura usado pelo método para cumprir a responsabilidade descrita.
+ */
     private void definirLarguraColuna(JTable tabela, int indice, int largura) {
         tabela.getColumnModel().getColumn(indice).setMinWidth(largura);
         tabela.getColumnModel().getColumn(indice).setPreferredWidth(largura);
     }
 
+    /**
+ * Responsabilidade: realizar a operação inicializar tabela resumo no contexto da classe StatusPanel.
+ */
     private void inicializarTabelaResumo() {
         modeloResumo.setRowCount(0);
         modeloResumo.addRow(new Object[]{"Tempo", TEXTO_VAZIO});
-        modeloResumo.addRow(new Object[]{"Corrente", TEXTO_VAZIO});
+        modeloResumo.addRow(new Object[]{"Corrente X", TEXTO_VAZIO});
+        modeloResumo.addRow(new Object[]{"Corrente Y", TEXTO_VAZIO});
+        modeloResumo.addRow(new Object[]{"Vel. corrente", TEXTO_VAZIO});
     }
 
+    /**
+ * Responsabilidade: realizar a operação limpar tabelas no contexto da classe StatusPanel.
+ */
     private void limparTabelas() {
         modeloNavios.setRowCount(0);
         modeloPortos.setRowCount(0);
     }
 
+    /**
+ * Responsabilidade: atualizar resumo vazio com os dados atuais.
+ */
     private void atualizarResumoVazio() {
         modeloResumo.setValueAt(TEXTO_VAZIO, 0, 1);
         modeloResumo.setValueAt(TEXTO_VAZIO, 1, 1);
+        modeloResumo.setValueAt(TEXTO_VAZIO, 2, 1);
+        modeloResumo.setValueAt(TEXTO_VAZIO, 3, 1);
     }
 
+    /**
+ * Responsabilidade: atualizar resumo com os dados atuais.
+ * @param estado estado da simulação recebido do Engine.
+ */
     private void atualizarResumo(EstadoSimulacao estado) {
         modeloResumo.setValueAt(estado.getTempoAtual(), 0, 1);
-
-        modeloResumo.setValueAt(String.format(Locale.US, "<%.2f, %.2f>", estado.getCorrente().getX(), estado.getCorrente().getY()), 1, 1);
+        modeloResumo.setValueAt(formatarDouble(estado.getCorrente().getX()), 1, 1);
+        modeloResumo.setValueAt(formatarDouble(estado.getCorrente().getY()), 2, 1);
+        modeloResumo.setValueAt(formatarDouble(estado.getCorrente().modulo()), 3, 1);
     }
 
+    /**
+ * Responsabilidade: atualizar tabela navios com os dados atuais.
+ * @param estado estado da simulação recebido do Engine.
+ */
     private void atualizarTabelaNavios(EstadoSimulacao estado) {
         if (estado.getNavios().isEmpty()) {
             mostrarTabelaOuMensagem(scrollNavios, mensagemNavios, false, MSG_SEM_NAVIOS);
@@ -297,6 +394,10 @@ public class StatusPanel extends JPanel {
         mostrarTabelaOuMensagem(scrollNavios, mensagemNavios, true, null);
     }
 
+    /**
+ * Responsabilidade: atualizar tabela portos com os dados atuais.
+ * @param estado estado da simulação recebido do Engine.
+ */
     private void atualizarTabelaPortos(EstadoSimulacao estado) {
         if (!adicionarViagensEmEspera(estado)) {
             mostrarTabelaOuMensagem(scrollPortos, mensagemPortos, false, MSG_SEM_VIAGENS);
@@ -306,6 +407,11 @@ public class StatusPanel extends JPanel {
         mostrarTabelaOuMensagem(scrollPortos, mensagemPortos, true, null);
     }
 
+    /**
+ * Responsabilidade: adicionar viagens em espera à estrutura respetiva mantendo a consistência dos dados.
+ * @param estado estado da simulação recebido do Engine.
+ * @return true se a condição se verificar; false caso contrário.
+ */
     private boolean adicionarViagensEmEspera(EstadoSimulacao estado) {
         boolean adicionouViagem = false;
 
@@ -319,27 +425,55 @@ public class StatusPanel extends JPanel {
         return adicionouViagem;
     }
 
+    /**
+ * Responsabilidade: adicionar linha navio à estrutura respetiva mantendo a consistência dos dados.
+ * @param navio navio cujos dados serão analisados ou apresentados.
+ */
     private void adicionarLinhaNavio(InfoNavio navio) {
         modeloNavios.addRow(new Object[]{
                 navio.getCodigoViagem(),
                 navio.getEstado(),
                 formatarDouble(navio.getPosicao().getX()),
                 formatarDouble(navio.getPosicao().getY()),
+                formatarDouble(navio.getVelocidadeLinear()),
                 formatarVelocidadeX(navio),
                 formatarVelocidadeY(navio),
                 navio.deveMostrarCirculoColisao() ? TEXTO_SIM : TEXTO_NAO
         });
     }
 
+    /**
+ * Responsabilidade: adicionar linha viagem à estrutura respetiva mantendo a consistência dos dados.
+ * @param porto porto associado à operação.
+ * @param viagem viagem programada ou apresentada.
+ */
     private void adicionarLinhaViagem(InfoPorto porto, InfoViagem viagem) {
         modeloPortos.addRow(new Object[]{
                 porto.getNome(),
-                viagem.getTempoSaida(),
-                viagem.getDestino(),
-                formatarDouble(viagem.getVelocidadeLinear())
+                formatarViagemEnunciado(viagem)
         });
     }
 
+    /**
+ * Responsabilidade: formatar uma viagem em espera no formato pedido pelo enunciado.
+ * @param viagem viagem programada ou apresentada.
+ * @return texto no formato T=?, destino, velocidade.
+ */
+    private String formatarViagemEnunciado(InfoViagem viagem) {
+        return String.format(Locale.US,
+                "T=%d, %s, %.2f",
+                viagem.getTempoSaida(),
+                viagem.getDestino(),
+                viagem.getVelocidadeLinear());
+    }
+
+    /**
+ * Responsabilidade: controlar a apresentação de tabela ou mensagem no GUI.
+ * @param scroll componente de scroll associado à tabela.
+ * @param mensagem label de mensagem alternativa à tabela.
+ * @param mostrarTabela indica se a tabela deve ser apresentada.
+ * @param textoMensagem mensagem mostrada quando a tabela está oculta.
+ */
     private void mostrarTabelaOuMensagem(JScrollPane scroll, JLabel mensagem, boolean mostrarTabela, String textoMensagem) {
         scroll.setVisible(mostrarTabela);
         mensagem.setVisible(!mostrarTabela);
@@ -349,6 +483,11 @@ public class StatusPanel extends JPanel {
         }
     }
 
+    /**
+ * Responsabilidade: realizar a operação formatar velocidade x no contexto da classe StatusPanel.
+ * @param navio navio cujos dados serão analisados ou apresentados.
+ * @return texto formatado ou identificador pedido.
+ */
     private String formatarVelocidadeX(InfoNavio navio) {
         if (!navio.temVelocidadeVetorial()) {
             return TEXTO_VAZIO;
@@ -357,6 +496,11 @@ public class StatusPanel extends JPanel {
         return formatarDouble(navio.getVelocidadeVetorial().getX());
     }
 
+    /**
+ * Responsabilidade: realizar a operação formatar velocidade y no contexto da classe StatusPanel.
+ * @param navio navio cujos dados serão analisados ou apresentados.
+ * @return texto formatado ou identificador pedido.
+ */
     private String formatarVelocidadeY(InfoNavio navio) {
         if (!navio.temVelocidadeVetorial()) {
             return TEXTO_VAZIO;
@@ -365,13 +509,15 @@ public class StatusPanel extends JPanel {
         return formatarDouble(navio.getVelocidadeVetorial().getY());
     }
 
+    /**
+ * Responsabilidade: formatar um valor real com duas casas decimais usando Locale.US.
+ * @param valor valor numérico a validar, formatar ou converter.
+ * @return texto formatado ou identificador pedido.
+ */
     private String formatarDouble(double valor) {
         return String.format(Locale.US, "%.2f", valor);
     }
 
-    /**
-     * Renderer do cabeçalho das tabelas principais.
-     */
     private static class HeaderRenderer extends DefaultTableCellRenderer {
         HeaderRenderer(JTable tabela) {
             setFont(FONTE_CABECALHO_TABELA);
@@ -382,6 +528,16 @@ public class StatusPanel extends JPanel {
             setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, COR_GRELHA));
         }
 
+        /**
+ * Responsabilidade: devolver table cell renderer component associado à instância atual.
+ * @param table table usado pelo método para cumprir a responsabilidade descrita.
+ * @param value value usado pelo método para cumprir a responsabilidade descrita.
+ * @param isSelected is selected usado pelo método para cumprir a responsabilidade descrita.
+ * @param hasFocus has focus usado pelo método para cumprir a responsabilidade descrita.
+ * @param row row usado pelo método para cumprir a responsabilidade descrita.
+ * @param column column usado pelo método para cumprir a responsabilidade descrita.
+ * @return objeto resultante da operação.
+ */
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -398,10 +554,17 @@ public class StatusPanel extends JPanel {
         }
     }
 
-    /**
-     * Renderer das células das tabelas principais.
-     */
     private static class TableCellRenderer extends DefaultTableCellRenderer {
+        /**
+ * Responsabilidade: devolver table cell renderer component associado à instância atual.
+ * @param table table usado pelo método para cumprir a responsabilidade descrita.
+ * @param value value usado pelo método para cumprir a responsabilidade descrita.
+ * @param isSelected is selected usado pelo método para cumprir a responsabilidade descrita.
+ * @param hasFocus has focus usado pelo método para cumprir a responsabilidade descrita.
+ * @param row row usado pelo método para cumprir a responsabilidade descrita.
+ * @param column column usado pelo método para cumprir a responsabilidade descrita.
+ * @return objeto resultante da operação.
+ */
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -418,13 +581,17 @@ public class StatusPanel extends JPanel {
         }
     }
 
-    /**
-     * Renderer da tabela de resumo.
-     *
-     * A primeira coluna usa Arial Bold 12.
-     * A segunda coluna usa Arial Plain 12.
-     */
     private static class ResumoRenderer extends DefaultTableCellRenderer {
+        /**
+ * Responsabilidade: devolver table cell renderer component associado à instância atual.
+ * @param table table usado pelo método para cumprir a responsabilidade descrita.
+ * @param value value usado pelo método para cumprir a responsabilidade descrita.
+ * @param isSelected is selected usado pelo método para cumprir a responsabilidade descrita.
+ * @param hasFocus has focus usado pelo método para cumprir a responsabilidade descrita.
+ * @param row row usado pelo método para cumprir a responsabilidade descrita.
+ * @param column column usado pelo método para cumprir a responsabilidade descrita.
+ * @return objeto resultante da operação.
+ */
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);

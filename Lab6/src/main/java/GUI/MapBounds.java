@@ -10,7 +10,12 @@ import Engine.Ponto;
 import Engine.Route;
 
 /**
- * Limites em coordenadas do mundo usados para converter o mapa para ecrã.
+ * Responsabilidade: calcular os limites geométricos do mapa para enquadrar rotas, portos e obstáculos.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 final class MapBounds {
     private double minX = Double.POSITIVE_INFINITY;

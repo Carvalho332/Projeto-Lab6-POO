@@ -3,7 +3,12 @@ package GUI;
 import Engine.Ponto;
 
 /**
- * Conversor entre coordenadas do mundo da simulação e coordenadas do ecrã.
+ * Responsabilidade: converter coordenadas do mundo da simulação em coordenadas do painel gráfico.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 final class MapTransform {
     private final double minX;

@@ -4,16 +4,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 /**
- * Responsabilidade: testar a classe Triangulo, validando invariantes geométricos e comportamento herdado de Poligono.
- *
- * Autores:
- * - Francisco Mestre Nº 76914
- * - Diogo Carvalho Nº 90247
- * - Rudy Silva Nº 88487
- *
- * Data: 26/04/2026
+ * Responsabilidade: suportar uma responsabilidade específica do simulador de navegação.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public class TrianguloTests {
+    /**
+ * Responsabilidade: validar valid triangle através de um teste unitário.
+ */
     @Test
     public void testValidTriangle() {
         Triangulo t = new Triangulo(new Ponto[] {
@@ -23,6 +24,9 @@ public class TrianguloTests {
         assertEquals(3, t.getNumeroVertices());
     }
 
+    /**
+ * Responsabilidade: validar intersect segmento através de um teste unitário.
+ */
     @Test
     public void testIntersectSegmento() {
         Triangulo t = new Triangulo(new Ponto[] {
@@ -38,6 +42,9 @@ public class TrianguloTests {
         TestSupport.assertContainsPonto(inter, 3.0, 1.0);
     }
 
+    /**
+ * Responsabilidade: validar invalid triangle através de um teste unitário.
+ */
     @Test
     public void testInvalidTriangle() {
         assertThrows(IllegalArgumentException.class, () -> new Triangulo(new Ponto[] {

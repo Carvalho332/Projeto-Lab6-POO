@@ -4,16 +4,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 /**
- * Responsabilidade: testar a classe ObstaculoMovel, validando a sua criação como obstáculo circular reposicionável no início da simulação.
- *
- * Autores:
- * - Francisco Mestre Nº 76914
- * - Diogo Carvalho Nº 90247
- * - Rudy Silva Nº 88487
- *
- * Data: 26/04/2026
+ * Responsabilidade: suportar uma responsabilidade específica do simulador de navegação.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public class ObstaculoMovelTests {
+    /**
+ * Responsabilidade: validar obstacle movel is circle através de um teste unitário.
+ */
     @Test
     public void testObstacleMovelIsCircle() {
         ObstaculoMovel o = new ObstaculoMovel(new Ponto(2.0, 3.0), 1.5);
@@ -23,6 +24,9 @@ public class ObstaculoMovelTests {
         assertEquals(1.5, o.getRaio(), TestSupport.EPS);
     }
 
+    /**
+ * Responsabilidade: validar invalid obstacle movel através de um teste unitário.
+ */
     @Test
     public void testInvalidObstacleMovel() {
         assertThrows(IllegalArgumentException.class, () -> new ObstaculoMovel(null, 1.0));

@@ -3,22 +3,14 @@ package Engine;
 import java.util.Optional;
 
 /**
- * Responsabilidade: definir a estratégia usada para calcular uma rota disponível
- * entre dois portos.
- *
- * @version 2026-05-08
- * @see CalcularRota
+ * Responsabilidade: definir o contrato para algoritmos que calculam rotas entre portos.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public interface EstrategiaCalculoRota {
-    /**
-     * Calcula uma rota possível entre dois portos.
-     *
-     * @param origem porto de origem
-     * @param destino porto de destino
-     * @param mapa mapa de navegação
-     * @param corrente velocidade da corrente
-     * @param velocidadeLinear velocidade linear pretendida para o navio
-     * @return rota calculada, ou Optional.empty() se não existir caminho disponível
-     */
+
     Optional<Route> calcular(Porto origem, Porto destino, MapaNavegacao mapa, Vetor corrente, double velocidadeLinear);
 }

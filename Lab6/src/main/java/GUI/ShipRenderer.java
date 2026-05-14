@@ -12,7 +12,14 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 import java.util.List;
 
-/** Desenha os navios e os círculos de colisão. */
+/**
+ * Responsabilidade: desenhar navios e respetivas zonas de colisão no mapa.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
+ */
 final class ShipRenderer {
     private static final Color[] CORES_NAVIOS = {
             new Color(0, 0, 0),
@@ -24,6 +31,9 @@ final class ShipRenderer {
             new Color(230, 90, 140),
     };
 
+    /**
+ * Responsabilidade: construir uma instância de ShipRenderer, validando os dados recebidos para preservar os invariantes.
+ */
     private ShipRenderer() {
     }
 
@@ -33,6 +43,12 @@ final class ShipRenderer {
         }
     }
 
+    /**
+ * Responsabilidade: realizar a operação desenhar navio no contexto da classe ShipRenderer.
+ * @param g2 contexto gráfico 2D onde o elemento será desenhado.
+ * @param t tempo disponível para percorrer o segmento.
+ * @param navio navio cujos dados serão analisados ou apresentados.
+ */
     private static void desenharNavio(Graphics2D g2, MapTransform t, InfoNavio navio) {
         int x = t.x(navio.getPosicao());
         int y = t.y(navio.getPosicao());
@@ -50,6 +66,14 @@ final class ShipRenderer {
         g2.drawString(navio.getCodigoViagem(), (int) Math.round(x + 12 * MapStyle.escalaIcone(t)), y + 4);
     }
 
+    /**
+ * Responsabilidade: realizar a operação desenhar zona colisao no contexto da classe ShipRenderer.
+ * @param g2 contexto gráfico 2D onde o elemento será desenhado.
+ * @param t tempo disponível para percorrer o segmento.
+ * @param navio navio cujos dados serão analisados ou apresentados.
+ * @param x coordenada horizontal.
+ * @param y coordenada vertical.
+ */
     private static void desenharZonaColisao(Graphics2D g2, MapTransform t, InfoNavio navio, int x, int y) {
         double r = t.getScale();
         Shape colisao = new Ellipse2D.Double(x - r, y - r, 2 * r, 2 * r);
@@ -66,6 +90,11 @@ final class ShipRenderer {
         }
     }
 
+    /**
+ * Responsabilidade: realizar a operação cor do navio no contexto da classe ShipRenderer.
+ * @param navio navio cujos dados serão analisados ou apresentados.
+ * @return objeto resultante da operação.
+ */
     private static Color corDoNavio(InfoNavio navio) {
         if (navio.getEstado() == EstadoNavio.CHEGOU) {
             return MapStyle.COR_NAVIO_CHEGOU;
@@ -77,6 +106,14 @@ final class ShipRenderer {
         return CORES_NAVIOS[indice];
     }
 
+    /**
+ * Responsabilidade: criar forma barco com a configuração necessária.
+ * @param navio navio cujos dados serão analisados ou apresentados.
+ * @param t tempo disponível para percorrer o segmento.
+ * @param x coordenada horizontal.
+ * @param y coordenada vertical.
+ * @return objeto resultante da operação.
+ */
     private static Path2D criarFormaBarco(InfoNavio navio, MapTransform t, int x, int y) {
         double[] direcao = direcaoNormalizada(navio, t);
         double ux = direcao[0];
@@ -105,6 +142,12 @@ final class ShipRenderer {
         return barco;
     }
 
+    /**
+ * Responsabilidade: realizar a operação direcao normalizada no contexto da classe ShipRenderer.
+ * @param navio navio cujos dados serão analisados ou apresentados.
+ * @param t tempo disponível para percorrer o segmento.
+ * @return array com os elementos calculados ou copiados.
+ */
     private static double[] direcaoNormalizada(InfoNavio navio, MapTransform t) {
         Ponto pontoDirecao = navio.getProximoPonto();
         double dx = 0.0;

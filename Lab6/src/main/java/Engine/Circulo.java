@@ -1,9 +1,12 @@
 package Engine;
 
 /**
- * Responsabilidade: representar um círculo definido por centro e raio.
- *
- * @inv centro != null && raio > 0
+ * Responsabilidade: representar obstáculos circulares e calcular interseções entre a circunferência/disco e segmentos de reta.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv o centro não é nulo e o raio é positivo.
  */
 public class Circulo extends Obstaculo {
     private static final double EPS = 1e-9;
@@ -11,6 +14,11 @@ public class Circulo extends Obstaculo {
     private final Ponto centro;
     private final double raio;
 
+    /**
+ * Responsabilidade: construir uma instância de Circulo, validando os dados recebidos para preservar os invariantes.
+ * @param centro centro usado pelo método para cumprir a responsabilidade descrita.
+ * @param raio raio usado pelo método para cumprir a responsabilidade descrita.
+ */
     public Circulo(Ponto centro, double raio) {
         if (centro == null) {
             throw new IllegalArgumentException("Circulo: centro null");
@@ -20,14 +28,27 @@ public class Circulo extends Obstaculo {
         verificaInvariante();
     }
 
+    /**
+ * Responsabilidade: devolver centro associado à instância atual.
+ * @return ponto calculado ou guardado pela instância.
+ */
     public Ponto getCentro() {
         return centro;
     }
 
+    /**
+ * Responsabilidade: devolver raio associado à instância atual.
+ * @return valor real resultante do cálculo.
+ */
     public double getRaio() {
         return raio;
     }
 
+    /**
+ * Responsabilidade: calcular interseções entre este objeto geométrico e o objeto recebido.
+ * @param s s usado pelo método para cumprir a responsabilidade descrita.
+ * @return array com os elementos calculados ou copiados.
+ */
     @Override
     public Ponto[] intersect(SegmentoReta s) {
         if (s == null) {
@@ -90,11 +111,10 @@ public class Circulo extends Obstaculo {
     }
 
     /**
-     * Verifica se um ponto está dentro ou na fronteira do círculo.
-     *
-     * @param p ponto a testar
-     * @return true se a distância ao centro for menor ou igual ao raio
-     */
+ * Responsabilidade: verificar se o ponto pertence à área ou ao segmento representado.
+ * @param p ponto analisado, acrescentado ou convertido.
+ * @return true se a condição se verificar; false caso contrário.
+ */
     @Override
     public boolean contem(Ponto p) {
         if (p == null) {
@@ -103,6 +123,9 @@ public class Circulo extends Obstaculo {
         return centro.dist(p) <= raio + EPS;
     }
 
+    /**
+ * Responsabilidade: realizar a operação verifica invariante no contexto da classe Circulo.
+ */
     private void verificaInvariante() {
         if (!Double.isFinite(raio) || raio <= 0.0) {
             throw new IllegalArgumentException("Circulo:iv");

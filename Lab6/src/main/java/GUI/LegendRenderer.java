@@ -5,7 +5,14 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 
-/** Desenha a legenda no canto superior direito. */
+/**
+ * Responsabilidade: desenhar a legenda dos elementos visuais apresentados no mapa.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
+ */
 final class LegendRenderer {
     private static final Color COR_FUNDO = new Color(255, 255, 255, 220);
     private static final Color COR_CONTORNO = new Color(100, 110, 120);
@@ -15,6 +22,9 @@ final class LegendRenderer {
     private static final Color COR_CIRCULO_NAVIO = new Color(0, 180, 0);
     private static final Color COR_CIRCULO_ESPERA = new Color(255, 0, 0, 95);
 
+    /**
+ * Responsabilidade: construir uma instância de LegendRenderer, validando os dados recebidos para preservar os invariantes.
+ */
     private LegendRenderer() {
     }
 
@@ -67,6 +77,14 @@ final class LegendRenderer {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, antialias);
     }
 
+    /**
+ * Responsabilidade: realizar a operação desenhar caixa no contexto da classe LegendRenderer.
+ * @param g2 contexto gráfico 2D onde o elemento será desenhado.
+ * @param x coordenada horizontal.
+ * @param y coordenada vertical.
+ * @param w vetor da corrente a compensar no cálculo da velocidade própria do navio.
+ * @param h h usado pelo método para cumprir a responsabilidade descrita.
+ */
     private static void desenharCaixa(Graphics2D g2, int x, int y, int w, int h) {
         g2.setColor(COR_FUNDO);
         g2.fillRoundRect(x, y, w, h, 12, 12);
@@ -74,11 +92,24 @@ final class LegendRenderer {
         g2.drawRoundRect(x, y, w, h, 12, 12);
     }
 
+    /**
+ * Responsabilidade: realizar a operação desenhar texto no contexto da classe LegendRenderer.
+ * @param g2 contexto gráfico 2D onde o elemento será desenhado.
+ * @param x coordenada horizontal.
+ * @param y coordenada vertical.
+ * @param texto texto apresentado no componente gráfico.
+ */
     private static void desenharTexto(Graphics2D g2, int x, int y, String texto) {
         g2.setColor(Color.BLACK);
         g2.drawString(texto, x, y + 4);
     }
 
+    /**
+ * Responsabilidade: realizar a operação desenhar icone rota no contexto da classe LegendRenderer.
+ * @param g2 contexto gráfico 2D onde o elemento será desenhado.
+ * @param x coordenada horizontal.
+ * @param y coordenada vertical.
+ */
     private static void desenharIconeRota(Graphics2D g2, int x, int y) {
         g2.setColor(MapStyle.COR_ROTA);
         g2.setStroke(new BasicStroke(2.0f));
@@ -87,6 +118,12 @@ final class LegendRenderer {
         g2.fillOval(x + 14, y - 2, 4, 4);
     }
 
+    /**
+ * Responsabilidade: realizar a operação desenhar icone obstaculo movel no contexto da classe LegendRenderer.
+ * @param g2 contexto gráfico 2D onde o elemento será desenhado.
+ * @param x coordenada horizontal.
+ * @param y coordenada vertical.
+ */
     private static void desenharIconeObstaculoMovel(Graphics2D g2, int x, int y) {
         Shape circulo = new Ellipse2D.Double(x - 11, y - 11, 22, 22);
         g2.setColor(MapStyle.COR_OBSTACULO_MOVEL);
@@ -96,6 +133,12 @@ final class LegendRenderer {
         g2.draw(circulo);
     }
 
+    /**
+ * Responsabilidade: realizar a operação desenhar icone porto no contexto da classe LegendRenderer.
+ * @param g2 contexto gráfico 2D onde o elemento será desenhado.
+ * @param x coordenada horizontal.
+ * @param y coordenada vertical.
+ */
     private static void desenharIconePorto(Graphics2D g2, int x, int y) {
         double s = 0.55;
         desenharBasePorto(g2, x, y, s);
@@ -103,6 +146,13 @@ final class LegendRenderer {
         desenharCais(g2, x, y, s);
     }
 
+    /**
+ * Responsabilidade: realizar a operação desenhar base porto no contexto da classe LegendRenderer.
+ * @param g2 contexto gráfico 2D onde o elemento será desenhado.
+ * @param x coordenada horizontal.
+ * @param y coordenada vertical.
+ * @param s s usado pelo método para cumprir a responsabilidade descrita.
+ */
     private static void desenharBasePorto(Graphics2D g2, int x, int y, double s) {
         Path2D basePorto = new Path2D.Double();
         basePorto.moveTo(x - 14 * s, y + 8 * s);
@@ -120,6 +170,13 @@ final class LegendRenderer {
         g2.draw(basePorto);
     }
 
+    /**
+ * Responsabilidade: realizar a operação desenhar torre porto no contexto da classe LegendRenderer.
+ * @param g2 contexto gráfico 2D onde o elemento será desenhado.
+ * @param x coordenada horizontal.
+ * @param y coordenada vertical.
+ * @param s s usado pelo método para cumprir a responsabilidade descrita.
+ */
     private static void desenharTorrePorto(Graphics2D g2, int x, int y, double s) {
         Path2D torre = new Path2D.Double();
         torre.moveTo(x - 4 * s, y - 12 * s);
@@ -145,6 +202,13 @@ final class LegendRenderer {
         g2.draw(telhado);
     }
 
+    /**
+ * Responsabilidade: realizar a operação desenhar cais no contexto da classe LegendRenderer.
+ * @param g2 contexto gráfico 2D onde o elemento será desenhado.
+ * @param x coordenada horizontal.
+ * @param y coordenada vertical.
+ * @param s s usado pelo método para cumprir a responsabilidade descrita.
+ */
     private static void desenharCais(Graphics2D g2, int x, int y, double s) {
         Path2D cais = new Path2D.Double();
         cais.moveTo(x - 18 * s, y + 8 * s);
@@ -164,16 +228,36 @@ final class LegendRenderer {
         g2.fill(new Rectangle2D.Double(x + 8 * s, y + 13 * s, 3 * s, 5 * s));
     }
 
+    /**
+ * Responsabilidade: realizar a operação desenhar icone navio em movimento no contexto da classe LegendRenderer.
+ * @param g2 contexto gráfico 2D onde o elemento será desenhado.
+ * @param x coordenada horizontal.
+ * @param y coordenada vertical.
+ */
     private static void desenharIconeNavioEmMovimento(Graphics2D g2, int x, int y) {
         desenharCirculoColisao(g2, x, y, COR_CIRCULO_NAVIO, false);
         desenharBarcoLegenda(g2, x, y, COR_BARCO_LEGENDA);
     }
 
+    /**
+ * Responsabilidade: realizar a operação desenhar icone navio em espera no contexto da classe LegendRenderer.
+ * @param g2 contexto gráfico 2D onde o elemento será desenhado.
+ * @param x coordenada horizontal.
+ * @param y coordenada vertical.
+ */
     private static void desenharIconeNavioEmEspera(Graphics2D g2, int x, int y) {
         desenharCirculoColisao(g2, x, y, COR_CIRCULO_ESPERA, true);
         desenharBarcoLegenda(g2, x, y, MapStyle.COR_NAVIO_ESPERA);
     }
 
+    /**
+ * Responsabilidade: realizar a operação desenhar circulo colisao no contexto da classe LegendRenderer.
+ * @param g2 contexto gráfico 2D onde o elemento será desenhado.
+ * @param x coordenada horizontal.
+ * @param y coordenada vertical.
+ * @param cor cor usado pelo método para cumprir a responsabilidade descrita.
+ * @param preenchido preenchido usado pelo método para cumprir a responsabilidade descrita.
+ */
     private static void desenharCirculoColisao(Graphics2D g2, int x, int y, Color cor, boolean preenchido) {
         Shape circulo = new Ellipse2D.Double(x - 12, y - 12, 24, 24);
         g2.setStroke(new BasicStroke(1.8f));
@@ -187,6 +271,13 @@ final class LegendRenderer {
         g2.draw(circulo);
     }
 
+    /**
+ * Responsabilidade: realizar a operação desenhar barco legenda no contexto da classe LegendRenderer.
+ * @param g2 contexto gráfico 2D onde o elemento será desenhado.
+ * @param x coordenada horizontal.
+ * @param y coordenada vertical.
+ * @param cor cor usado pelo método para cumprir a responsabilidade descrita.
+ */
     private static void desenharBarcoLegenda(Graphics2D g2, int x, int y, Color cor) {
         Path2D barco = new Path2D.Double();
         barco.moveTo(x + 13, y);

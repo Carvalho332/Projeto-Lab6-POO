@@ -3,14 +3,12 @@ package Engine;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Responsabilidade: fornecer métodos auxiliares reutilizados pelos testes unitários, reduzindo duplicação e mantendo asserções consistentes.
- *
- * Autores:
- * - Francisco Mestre Nº 76914
- * - Diogo Carvalho Nº 90247
- * - Rudy Silva Nº 88487
- *
- * Data: 26/04/2026
+ * Responsabilidade: fornecer métodos auxiliares reutilizáveis pelos testes unitários do Engine.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 class TestSupport {
     static final double EPS = 1e-9;

@@ -16,11 +16,12 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
 
 /**
- * Responsabilidade: painel Swing que apresenta o mapa da simulação.
- *
- * <p>Esta classe gere apenas o estado visual do painel: zoom, pan e delegação de
- * desenho. O desenho concreto de rotas, portos, obstáculos, navios, grelha e
- * legenda está separado em classes renderer no pacote GUI.</p>
+ * Responsabilidade: apresentar graficamente o mapa, rotas, obstáculos, portos, navios e zonas de colisão.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public class MapPanel extends JPanel {
     private static final double MIN_ZOOM = 0.35;
@@ -38,6 +39,9 @@ public class MapPanel extends JPanel {
     private EstadoSimulacao estado;
     private boolean mostrarGrelha = true;
 
+    /**
+ * Responsabilidade: construir uma instância de MapPanel, validando os dados recebidos para preservar os invariantes.
+ */
     public MapPanel() {
         setPreferredSize(new Dimension(850, 850));
         setBackground(MapStyle.COR_MAR);
@@ -45,16 +49,27 @@ public class MapPanel extends JPanel {
         new Timer(120, e -> repaint()).start();
     }
 
+    /**
+ * Responsabilidade: preencher as tabelas do painel com o estado mais recente da simulação.
+ * @param estado estado da simulação recebido do Engine.
+ */
     public void setEstado(EstadoSimulacao estado) {
         this.estado = estado;
         repaint();
     }
 
+    /**
+ * Responsabilidade: atualizar mostrar grelha da instância atual com o valor recebido.
+ * @param mostrarGrelha mostrar grelha usado pelo método para cumprir a responsabilidade descrita.
+ */
     public void setMostrarGrelha(boolean mostrarGrelha) {
         this.mostrarGrelha = mostrarGrelha;
         repaint();
     }
 
+    /**
+ * Responsabilidade: realizar a operação repor zoom no contexto da classe MapPanel.
+ */
     public void reporZoom() {
         zoom = 1.0;
         panX = 0.0;
@@ -62,6 +77,10 @@ public class MapPanel extends JPanel {
         repaint();
     }
 
+    /**
+ * Responsabilidade: redesenhar o painel gráfico com base no estado atual.
+ * @param g contexto gráfico recebido pelo Swing.
+ */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -87,20 +106,35 @@ public class MapPanel extends JPanel {
         g2.dispose();
     }
 
+    /**
+ * Responsabilidade: configurar interacao rato de acordo com o aspeto definido para o GUI.
+ */
     private void configurarInteracaoRato() {
         addMouseWheelListener(this::processarZoomComScroll);
         addMouseListener(new MouseAdapter() {
+            /**
+ * Responsabilidade: realizar a operação mouse pressed no contexto da classe MapPanel.
+ * @param e e usado pelo método para cumprir a responsabilidade descrita.
+ */
             @Override
             public void mousePressed(MouseEvent e) {
                 iniciarArrasto(e);
             }
 
+            /**
+ * Responsabilidade: realizar a operação mouse released no contexto da classe MapPanel.
+ * @param e e usado pelo método para cumprir a responsabilidade descrita.
+ */
             @Override
             public void mouseReleased(MouseEvent e) {
                 terminarArrasto();
             }
         });
         addMouseMotionListener(new MouseMotionAdapter() {
+            /**
+ * Responsabilidade: realizar a operação mouse dragged no contexto da classe MapPanel.
+ * @param e e usado pelo método para cumprir a responsabilidade descrita.
+ */
             @Override
             public void mouseDragged(MouseEvent e) {
                 processarArrasto(e);
@@ -108,6 +142,10 @@ public class MapPanel extends JPanel {
         });
     }
 
+    /**
+ * Responsabilidade: realizar a operação iniciar arrasto no contexto da classe MapPanel.
+ * @param e e usado pelo método para cumprir a responsabilidade descrita.
+ */
     private void iniciarArrasto(MouseEvent e) {
         if (e.getButton() != MouseEvent.BUTTON1) {
             return;
@@ -118,11 +156,18 @@ public class MapPanel extends JPanel {
         setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
     }
 
+    /**
+ * Responsabilidade: realizar a operação terminar arrasto no contexto da classe MapPanel.
+ */
     private void terminarArrasto() {
         arrastando = false;
         setCursor(Cursor.getDefaultCursor());
     }
 
+    /**
+ * Responsabilidade: realizar a operação processar arrasto no contexto da classe MapPanel.
+ * @param e e usado pelo método para cumprir a responsabilidade descrita.
+ */
     private void processarArrasto(MouseEvent e) {
         if (!arrastando) {
             return;
@@ -136,6 +181,10 @@ public class MapPanel extends JPanel {
         repaint();
     }
 
+    /**
+ * Responsabilidade: realizar a operação processar zoom com scroll no contexto da classe MapPanel.
+ * @param e e usado pelo método para cumprir a responsabilidade descrita.
+ */
     private void processarZoomComScroll(MouseWheelEvent e) {
         if (estado == null) {
             return;
@@ -158,10 +207,19 @@ public class MapPanel extends JPanel {
         repaint();
     }
 
+    /**
+ * Responsabilidade: criar transform com a configuração necessária.
+ * @param estado estado da simulação recebido do Engine.
+ * @return objeto resultante da operação.
+ */
     private MapTransform criarTransform(EstadoSimulacao estado) {
         return new MapTransform(MapBounds.from(estado), getWidth(), getHeight(), zoom, panX, panY);
     }
 
+    /**
+ * Responsabilidade: realizar a operação desenhar mensagem inicial no contexto da classe MapPanel.
+ * @param g2 contexto gráfico 2D onde o elemento será desenhado.
+ */
     private void desenharMensagemInicial(Graphics2D g2) {
         g2.setColor(Color.DARK_GRAY);
         g2.drawString("Use Play, Passo ou Nova simulação para testar o simulador.",

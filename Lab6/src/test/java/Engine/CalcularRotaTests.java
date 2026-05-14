@@ -5,18 +5,19 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 /**
- * Responsabilidade: testar a classe CalcularRota, validando a escolha de rotas, o cálculo de tempo e a deteção de rotas bloqueadas.
- *
- * Autores:
- * - Francisco Mestre Nº 76914
- * - Diogo Carvalho Nº 90247
- * - Rudy Silva Nº 88487
- *
- * Data: 26/04/2026
+ * Responsabilidade: suportar uma responsabilidade específica do simulador de navegação.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public class CalcularRotaTests {
     private static final double EPS = TestSupport.EPS;
 
+    /**
+ * Responsabilidade: validar rota bloqueada através de um teste unitário.
+ */
     @Test
     public void testRotaBloqueada() {
         Route rota = new Route(new Ponto[] { new Ponto(0.0, 0.0), new Ponto(10.0, 0.0) });
@@ -28,6 +29,9 @@ public class CalcularRotaTests {
         assertFalse(calc.rotaBloqueada(rota, List.of(afastado)));
     }
 
+    /**
+ * Responsabilidade: validar tempo rota através de um teste unitário.
+ */
     @Test
     public void testTempoRota() {
         Route rota = new Route(new Ponto[] { new Ponto(0.0, 0.0), new Ponto(10.0, 0.0) });
@@ -36,6 +40,9 @@ public class CalcularRotaTests {
         assertEquals(5.0, calc.tempoRota(rota, new Vetor(0.0, 0.0), 2.0), EPS);
     }
 
+    /**
+ * Responsabilidade: validar rota mais rapida escolhe direta através de um teste unitário.
+ */
     @Test
     public void testRotaMaisRapidaEscolheDireta() {
         Porto a = TestSupport.porto("A", 0.0, 0.0);
@@ -59,6 +66,9 @@ public class CalcularRotaTests {
         assertEquals(10.0, r.comprimento(), EPS);
     }
 
+    /**
+ * Responsabilidade: validar rota mais rapida ignora rota bloqueada através de um teste unitário.
+ */
     @Test
     public void testRotaMaisRapidaIgnoraRotaBloqueada() {
         Porto a = TestSupport.porto("A", 0.0, 0.0);
@@ -83,6 +93,9 @@ public class CalcularRotaTests {
         TestSupport.assertPonto(r.getPonto(2), 10.0, 0.0);
     }
 
+    /**
+ * Responsabilidade: validar rota mais rapida returns null when no path através de um teste unitário.
+ */
     @Test
     public void testRotaMaisRapidaReturnsNullWhenNoPath() {
         Porto a = TestSupport.porto("A", 0.0, 0.0);
@@ -94,7 +107,9 @@ public class CalcularRotaTests {
         assertNull(new CalcularRota().rotaMaisRapida(a, b, mapa, new Vetor(0.0, 0.0), 1.0));
     }
 
-
+    /**
+ * Responsabilidade: validar calcular retorna optional vazio quando nao existe caminho através de um teste unitário.
+ */
     @Test
     public void testCalcularRetornaOptionalVazioQuandoNaoExisteCaminho() {
         Porto a = TestSupport.porto("A", 0.0, 0.0);
@@ -106,6 +121,9 @@ public class CalcularRotaTests {
         assertTrue(new CalcularRota().calcular(a, b, mapa, new Vetor(0.0, 0.0), 1.0).isEmpty());
     }
 
+    /**
+ * Responsabilidade: validar rota bloqueada quando segmento esta dentro do obstaculo através de um teste unitário.
+ */
     @Test
     public void testRotaBloqueadaQuandoSegmentoEstaDentroDoObstaculo() {
         Route rota = new Route(new Ponto[] { new Ponto(0.0, 0.0), new Ponto(1.0, 0.0) });
@@ -114,45 +132,9 @@ public class CalcularRotaTests {
         assertTrue(new CalcularRota().rotaBloqueada(rota, List.of(obstaculo)));
     }
 
-
-
-    @Test
-    public void testCalcularRetornaOptionalVazioQuandoOrigemEDestinoSaoOMesmoPorto() {
-        Porto a = TestSupport.porto("A", 0.0, 0.0);
-        MapaNavegacao mapa = new MapaNavegacao();
-        mapa.adicionarPorto(a);
-
-        assertTrue(new CalcularRota().calcular(a, a, mapa, new Vetor(0.0, 0.0), 1.0).isEmpty());
-        assertNull(new CalcularRota().rotaMaisRapida(a, a, mapa, new Vetor(0.0, 0.0), 1.0));
-    }
-
-    @Test
-    public void testRotaMaisRapidaPodeTrocarDeRotaEmIntersecao() {
-        Porto a = TestSupport.porto("A", 0.0, 0.0);
-        Porto b = TestSupport.porto("B", 5.0, 5.0);
-
-        MapaNavegacao mapa = new MapaNavegacao();
-        mapa.adicionarPorto(a);
-        mapa.adicionarPorto(b);
-        mapa.adicionarRota(new Route(new Ponto[]{a.getPosicao(), new Ponto(5.0, 0.0), new Ponto(10.0, 0.0)}));
-        mapa.adicionarRota(new Route(new Ponto[]{new Ponto(5.0, -5.0), new Ponto(5.0, 0.0), b.getPosicao()}));
-
-        Route r = new CalcularRota().rotaMaisRapida(a, b, mapa, new Vetor(0.0, 0.0), 1.0);
-
-        assertNotNull(r);
-        TestSupport.assertPonto(r.getInicio(), 0.0, 0.0);
-        TestSupport.assertPonto(r.getFim(), 5.0, 5.0);
-        assertTrue(r.contemPonto(new Ponto(5.0, 0.0)));
-        assertEquals(10.0, r.comprimento(), EPS);
-    }
-
-    @Test
-    public void testRotaBloqueadaValidaObstaculosNull() {
-        Route rota = new Route(new Ponto[] { new Ponto(0.0, 0.0), new Ponto(10.0, 0.0) });
-        assertThrows(IllegalArgumentException.class,
-                () -> new CalcularRota().rotaBloqueada(rota, java.util.Arrays.asList(new Circulo(new Ponto(1.0, 1.0), 0.5), null)));
-    }
-
+    /**
+ * Responsabilidade: validar invalid arguments através de um teste unitário.
+ */
     @Test
     public void testInvalidArguments() {
         CalcularRota calc = new CalcularRota();

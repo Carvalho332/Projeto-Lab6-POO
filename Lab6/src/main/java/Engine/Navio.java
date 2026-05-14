@@ -1,9 +1,13 @@
 package Engine;
 
 /**
- * Responsabilidade: representar um navio ativo numa simulação.
- *
- * @inv codigoViagem != null && destino != null && velocidadeLinear > 0 && rotaAtual != null
+ * Responsabilidade: representar um navio ativo, incluindo posição, rota, destino, estado e velocidade.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv o código, a posição, o destino e a rota atual não são nulos.
+ * @inv a velocidade linear é positiva.
  */
 public class Navio {
     private static final double DELTA_DIRECAO = 0.01;
@@ -17,6 +21,13 @@ public class Navio {
     private boolean mostrarCirculoColisao;
     private double tempoNaRota;
 
+    /**
+ * Responsabilidade: construir uma instância de Navio, validando os dados recebidos para preservar os invariantes.
+ * @param codigoViagem identificador da viagem associado ao navio.
+ * @param origem porto de partida da viagem ou do cálculo de rota.
+ * @param viagem viagem programada ou apresentada.
+ * @param rota rota analisada, percorrida ou construída pelo método.
+ */
     public Navio(String codigoViagem, Porto origem, Viagem viagem, Route rota) {
         if (codigoViagem == null || codigoViagem.isBlank() ||
                 origem == null || viagem == null || rota == null) {
@@ -36,46 +47,90 @@ public class Navio {
         this.tempoNaRota = 0.0;
     }
 
+    /**
+ * Responsabilidade: devolver codigo viagem associado à instância atual.
+ * @return texto formatado ou identificador pedido.
+ */
     public String getCodigoViagem() {
         return codigoViagem;
     }
 
+    /**
+ * Responsabilidade: devolver posicao atual associado à instância atual.
+ * @return ponto calculado ou guardado pela instância.
+ */
     public Ponto getPosicaoAtual() {
         return posicaoAtual;
     }
 
+    /**
+ * Responsabilidade: devolver destino associado à instância atual.
+ * @return objeto resultante da operação.
+ */
     public Porto getDestino() {
         return destino;
     }
 
+    /**
+ * Responsabilidade: devolver velocidade linear associado à instância atual.
+ * @return valor real resultante do cálculo.
+ */
     public double getVelocidadeLinear() {
         return velocidadeLinear;
     }
 
+    /**
+ * Responsabilidade: devolver rota atual associado à instância atual.
+ * @return rota calculada ou construída pela operação.
+ */
     public Route getRotaAtual() {
         return rotaAtual;
     }
 
+    /**
+ * Responsabilidade: devolver estado associado à instância atual.
+ * @return objeto resultante da operação.
+ */
     public EstadoNavio getEstado() {
         return estado;
     }
 
+    /**
+ * Responsabilidade: indicar se a condição deve mostrar circulo colisao se verifica no estado atual.
+ * @return true se a condição se verificar; false caso contrário.
+ */
     public boolean deveMostrarCirculoColisao() {
         return mostrarCirculoColisao;
     }
 
+    /**
+ * Responsabilidade: indicar se a condição esta em movimento se verifica no estado atual.
+ * @return true se a condição se verificar; false caso contrário.
+ */
     public boolean estaEmMovimento() {
         return estado == EstadoNavio.EM_MOVIMENTO;
     }
 
+    /**
+ * Responsabilidade: indicar se a condição esta em espera se verifica no estado atual.
+ * @return true se a condição se verificar; false caso contrário.
+ */
     public boolean estaEmEspera() {
         return estado == EstadoNavio.EM_ESPERA;
     }
 
+    /**
+ * Responsabilidade: realizar a operação chegou no contexto da classe Navio.
+ * @return true se a condição se verificar; false caso contrário.
+ */
     public boolean chegou() {
         return estado == EstadoNavio.CHEGOU;
     }
 
+    /**
+ * Responsabilidade: realizar a operação proxima posicao no contexto da classe Navio.
+ * @return ponto calculado ou guardado pela instância.
+ */
     public Ponto proximaPosicao() {
         if (!estaEmMovimento()) {
             return posicaoAtual;
@@ -83,6 +138,9 @@ public class Navio {
         return posicaoNoTempo(tempoNaRota + 1.0);
     }
 
+    /**
+ * Responsabilidade: realizar a operação avancar no contexto da classe Navio.
+ */
     public void avancar() {
         if (!estaEmMovimento()) {
             return;
@@ -96,6 +154,9 @@ public class Navio {
         }
     }
 
+    /**
+ * Responsabilidade: realizar a operação esperar no contexto da classe Navio.
+ */
     public void esperar() {
         if (estaEmMovimento()) {
             estado = EstadoNavio.EM_ESPERA;
@@ -103,6 +164,9 @@ public class Navio {
         }
     }
 
+    /**
+ * Responsabilidade: realizar a operação retomar no contexto da classe Navio.
+ */
     public void retomar() {
         if (estaEmEspera()) {
             estado = EstadoNavio.EM_MOVIMENTO;
@@ -110,11 +174,19 @@ public class Navio {
         }
     }
 
+    /**
+ * Responsabilidade: realizar a operação chegou destino no contexto da classe Navio.
+ * @return true se a condição se verificar; false caso contrário.
+ */
     public boolean chegouDestino() {
         return posicaoAtual.dist(destino.getPosicao()) < Geometria.EPS ||
                 tempoNaRota >= tempoTotalRota() - Geometria.EPS;
     }
 
+    /**
+ * Responsabilidade: realizar a operação definir rota atual no contexto da classe Navio.
+ * @param novaRota nova rota usado pelo método para cumprir a responsabilidade descrita.
+ */
     public void definirRotaAtual(Route novaRota) {
         if (novaRota == null) {
             throw new IllegalArgumentException("Navio.definirRotaAtual: rota null");
@@ -126,10 +198,17 @@ public class Navio {
         this.tempoNaRota = 0.0;
     }
 
+    /**
+ * Responsabilidade: realizar a operação limpar sinalizacao colisao no contexto da classe Navio.
+ */
     public void limparSinalizacaoColisao() {
         this.mostrarCirculoColisao = false;
     }
 
+    /**
+ * Responsabilidade: devolver ponto direcao associado à instância atual.
+ * @return ponto calculado ou guardado pela instância.
+ */
     public Ponto getPontoDirecao() {
         double tempoTotal = tempoTotalRota();
 
@@ -145,6 +224,11 @@ public class Navio {
         return seguinte;
     }
 
+    /**
+ * Responsabilidade: devolver velocidade vetorial associado à instância atual.
+ * @param corrente vetor da corrente usado para compensar o movimento do navio.
+ * @return vetor resultante da operação.
+ */
     public Vetor getVelocidadeVetorial(Vetor corrente) {
         if (corrente == null) {
             throw new IllegalArgumentException("Navio.getVelocidadeVetorial: corrente null");
@@ -162,18 +246,34 @@ public class Navio {
         return autoPilot.speed(corrente, autoPilot.time(velocidadeLinear));
     }
 
+    /**
+ * Responsabilidade: devolver proximo ponto associado à instância atual.
+ * @return ponto calculado ou guardado pela instância.
+ */
     public Ponto getProximoPonto() {
         return getPontoDirecao();
     }
 
+    /**
+ * Responsabilidade: indicar se a condição tempo total rota se verifica no estado atual.
+ * @return tempo de percurso calculado.
+ */
     private double tempoTotalRota() {
         return rotaAtual.time(velocidadeLinear);
     }
 
+    /**
+ * Responsabilidade: realizar a operação posicao no tempo no contexto da classe Navio.
+ * @param tempo tempo usado pelo método para cumprir a responsabilidade descrita.
+ * @return ponto calculado ou guardado pela instância.
+ */
     private Ponto posicaoNoTempo(double tempo) {
         return rotaAtual.position(velocidadeLinear, tempo);
     }
 
+    /**
+ * Responsabilidade: realizar a operação marcar como chegou no contexto da classe Navio.
+ */
     private void marcarComoChegou() {
         posicaoAtual = destino.getPosicao();
         estado = EstadoNavio.CHEGOU;

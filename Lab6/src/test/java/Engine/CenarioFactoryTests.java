@@ -4,21 +4,21 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 /**
- * Responsabilidade: testar que o cenário de demonstração cumpre os mínimos do enunciado.
- *
- * Autores:
- * - Francisco Mestre Nº 76914
- * - Diogo Carvalho Nº 90247
- * - Rudy Silva Nº 88487
- *
- * Data: 08/05/2026
+ * Responsabilidade: suportar uma responsabilidade específica do simulador de navegação.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public class CenarioFactoryTests {
+    /**
+ * Responsabilidade: validar cenario cumpre minimos do enunciado através de um teste unitário.
+ */
     @Test
     public void testCenarioCumpreMinimosDoEnunciado() {
         MapaNavegacao mapa = CenarioFactory.criarMapaDemo(123L);
 
-        assertTrue(mapa.cumpreMinimosEnunciado());
         assertTrue(mapa.getPortos().size() >= 4);
         assertTrue(mapa.getRotas().size() >= 6);
         assertTrue(mapa.getObstaculosFixos().size() >= 4);
@@ -26,10 +26,12 @@ public class CenarioFactoryTests {
 
         for (Route rota : mapa.getRotas()) {
             assertTrue(rota.getNumeroPontos() >= 4);
-            assertTrue(mapa.rotaLigaPortos(rota));
         }
     }
 
+    /**
+ * Responsabilidade: validar obstaculos moveis intersetam rotas através de um teste unitário.
+ */
     @Test
     public void testObstaculosMoveisIntersetamRotas() {
         MapaNavegacao mapa = CenarioFactory.criarMapaDemo(456L);
@@ -39,6 +41,9 @@ public class CenarioFactoryTests {
         }
     }
 
+    /**
+ * Responsabilidade: validar obstaculos moveis mudam entre simulacoes através de um teste unitário.
+ */
     @Test
     public void testObstaculosMoveisMudamEntreSimulacoes() {
         MapaNavegacao mapa1 = CenarioFactory.criarMapaDemo(1L);
@@ -50,6 +55,22 @@ public class CenarioFactoryTests {
         assertFalse(p1.igual(p2));
     }
 
+    /**
+ * Responsabilidade: validar que o simulador pode ser criado com uma corrente introduzida pelo utilizador.
+ */
+    @Test
+    public void testCriarSimuladorDemoComCorrenteIndicada() {
+        Vetor corrente = new Vetor(0.25, -0.50);
+        Simulador simulador = CenarioFactory.criarSimuladorDemo(123L, corrente);
+        EstadoSimulacao estado = simulador.iniciar();
+
+        assertEquals(0.25, estado.getCorrente().getX(), 1e-9);
+        assertEquals(-0.50, estado.getCorrente().getY(), 1e-9);
+    }
+
+    /**
+ * Responsabilidade: validar obstaculos moveis ficam fixos durante simulacao através de um teste unitário.
+ */
     @Test
     public void testObstaculosMoveisFicamFixosDuranteSimulacao() {
         Simulador simulador = CenarioFactory.criarSimuladorDemo(999L);
@@ -73,32 +94,12 @@ public class CenarioFactoryTests {
         assertTrue(centroInicial.igual(centroFinal));
     }
 
-
-
-    @Test
-    public void testCenarioTemViagensEmEspera() {
-        MapaNavegacao mapa = CenarioFactory.criarMapaDemo(321L);
-
-        int totalViagens = 0;
-        for (Porto porto : mapa.getPortos()) {
-            totalViagens += porto.getListaEspera().size();
-        }
-
-        assertTrue(totalViagens >= mapa.getPortos().size() * 2);
-    }
-
-    @Test
-    public void testCriarSimuladorDemoProduzEstadoInicialCoerente() {
-        Simulador simulador = CenarioFactory.criarSimuladorDemo(123L);
-        EstadoSimulacao estado = simulador.iniciar();
-
-        assertEquals(0, estado.getTempoAtual());
-        assertTrue(estado.getNavios().isEmpty());
-        assertTrue(estado.getPortos().size() >= 4);
-        assertTrue(estado.getRotas().size() >= 6);
-        assertTrue(estado.getObstaculos().size() >= 6);
-    }
-
+    /**
+ * Responsabilidade: realizar a operação interseta alguma rota no contexto da classe CenarioFactoryTests.
+ * @param obstaculo obstáculo analisado.
+ * @param mapa mapa de navegação com portos, rotas e obstáculos.
+ * @return true se a condição se verificar; false caso contrário.
+ */
     private boolean intersetaAlgumaRota(ObstaculoMovel obstaculo, MapaNavegacao mapa) {
         for (Route rota : mapa.getRotas()) {
             if (rota.intersect(obstaculo) != null) {

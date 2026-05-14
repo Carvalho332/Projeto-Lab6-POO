@@ -7,7 +7,12 @@ import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
 
 /**
- * Responsabilidade: janela principal da aplicação gráfica.
+ * Responsabilidade: construir a janela principal que contém mapa, estado e controlos da simulação.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public class NavigationFrame extends JFrame {
     private final MapPanel mapPanel;
@@ -15,6 +20,9 @@ public class NavigationFrame extends JFrame {
     private final ControlPanel controlPanel;
     private final SimulationController controller;
 
+    /**
+ * Responsabilidade: construir uma instância de NavigationFrame, validando os dados recebidos para preservar os invariantes.
+ */
     public NavigationFrame() {
         super("Lab 6 - Simulador de Navegação");
 

@@ -1,26 +1,26 @@
 package Engine;
 
 /**
- * Responsabilidade: representar um obstáculo geométrico que pode bloquear rotas.
- *
- * @version 2026-05-08
+ * Responsabilidade: definir o comportamento comum dos obstáculos que podem bloquear rotas.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public abstract class Obstaculo {
+
     /**
-     * Determina os pontos de interseção entre este obstáculo e um segmento de reta.
-     *
-     * @param s segmento de reta
-     * @return pontos de interseção ou null se não houver interseção com a fronteira
-     */
+ * Responsabilidade: calcular interseções entre este objeto geométrico e o objeto recebido.
+ * @param s s usado pelo método para cumprir a responsabilidade descrita.
+ * @return array com os elementos calculados ou copiados.
+ */
     public abstract Ponto[] intersect(SegmentoReta s);
 
     /**
-     * Indica se um ponto pertence ao interior ou à fronteira do obstáculo.
-     * Este método complementa intersect(), permitindo detetar rotas totalmente
-     * contidas dentro de um obstáculo.
-     *
-     * @param p ponto a testar
-     * @return true se o ponto pertencer ao obstáculo
-     */
+ * Responsabilidade: verificar se o ponto pertence à área ou ao segmento representado.
+ * @param p ponto analisado, acrescentado ou convertido.
+ * @return true se a condição se verificar; false caso contrário.
+ */
     public abstract boolean contem(Ponto p);
 }

@@ -4,16 +4,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 /**
- * Responsabilidade: testar a classe Retangulo, validando invariantes geométricos e comportamento herdado de Poligono.
- *
- * Autores:
- * - Francisco Mestre Nº 76914
- * - Diogo Carvalho Nº 90247
- * - Rudy Silva Nº 88487
- *
- * Data: 26/04/2026
+ * Responsabilidade: suportar uma responsabilidade específica do simulador de navegação.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public class RetanguloTests {
+    /**
+ * Responsabilidade: validar valid rectangle através de um teste unitário.
+ */
     @Test
     public void testValidRectangle() {
         Retangulo r = new Retangulo(new Ponto[] {
@@ -23,6 +24,9 @@ public class RetanguloTests {
         assertEquals(4, r.getNumeroVertices());
     }
 
+    /**
+ * Responsabilidade: validar intersect segmento através de um teste unitário.
+ */
     @Test
     public void testIntersectSegmento() {
         Retangulo r = new Retangulo(new Ponto[] {
@@ -38,6 +42,9 @@ public class RetanguloTests {
         TestSupport.assertContainsPonto(inter, 4.0, 1.0);
     }
 
+    /**
+ * Responsabilidade: validar invalid rectangle através de um teste unitário.
+ */
     @Test
     public void testInvalidRectangle() {
         assertThrows(IllegalArgumentException.class, () -> new Retangulo(new Ponto[] {

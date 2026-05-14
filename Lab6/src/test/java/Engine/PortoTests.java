@@ -4,16 +4,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 /**
- * Responsabilidade: testar a classe Porto, validando nome, posição e gestão da lista de viagens em espera.
- *
- * Autores:
- * - Francisco Mestre Nº 76914
- * - Diogo Carvalho Nº 90247
- * - Rudy Silva Nº 88487
- *
- * Data: 26/04/2026
+ * Responsabilidade: suportar uma responsabilidade específica do simulador de navegação.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public class PortoTests {
+    /**
+ * Responsabilidade: validar constructor and getters através de um teste unitário.
+ */
     @Test
     public void testConstructorAndGetters() {
         Ponto p = new Ponto(1.0, 2.0);
@@ -24,6 +25,9 @@ public class PortoTests {
         assertTrue(porto.getListaEspera().isEmpty());
     }
 
+    /**
+ * Responsabilidade: validar adicionar and remover viagem através de um teste unitário.
+ */
     @Test
     public void testAdicionarAndRemoverViagem() {
         Porto a = TestSupport.porto("A", 0.0, 0.0);
@@ -38,6 +42,9 @@ public class PortoTests {
         assertTrue(a.getListaEspera().isEmpty());
     }
 
+    /**
+ * Responsabilidade: validar lista espera is unmodifiable através de um teste unitário.
+ */
     @Test
     public void testListaEsperaIsUnmodifiable() {
         Porto a = TestSupport.porto("A", 0.0, 0.0);
@@ -47,6 +54,9 @@ public class PortoTests {
                 () -> a.getListaEspera().add(new Viagem(0, b, 1.0)));
     }
 
+    /**
+ * Responsabilidade: validar invalid porto através de um teste unitário.
+ */
     @Test
     public void testInvalidPorto() {
         assertThrows(IllegalArgumentException.class, () -> new Porto(null, new Ponto(0.0, 0.0)));

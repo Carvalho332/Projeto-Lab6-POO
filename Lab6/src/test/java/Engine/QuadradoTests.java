@@ -4,16 +4,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 /**
- * Responsabilidade: testar a classe Quadrado, validando invariantes geométricos e comportamento herdado de Retangulo/Poligono.
- *
- * Autores:
- * - Francisco Mestre Nº 76914
- * - Diogo Carvalho Nº 90247
- * - Rudy Silva Nº 88487
- *
- * Data: 26/04/2026
+ * Responsabilidade: suportar uma responsabilidade específica do simulador de navegação.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public class QuadradoTests {
+    /**
+ * Responsabilidade: validar valid square através de um teste unitário.
+ */
     @Test
     public void testValidSquare() {
         Quadrado q = new Quadrado(new Ponto[] {
@@ -23,6 +24,9 @@ public class QuadradoTests {
         assertEquals(4, q.getNumeroVertices());
     }
 
+    /**
+ * Responsabilidade: validar intersect segmento através de um teste unitário.
+ */
     @Test
     public void testIntersectSegmento() {
         Quadrado q = new Quadrado(new Ponto[] {
@@ -38,6 +42,9 @@ public class QuadradoTests {
         TestSupport.assertContainsPonto(inter, 2.0, 1.0);
     }
 
+    /**
+ * Responsabilidade: validar invalid square através de um teste unitário.
+ */
     @Test
     public void testInvalidSquare() {
         assertThrows(IllegalArgumentException.class, () -> new Quadrado(new Ponto[] {

@@ -6,16 +6,17 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 /**
- * Responsabilidade: testar a classe EstadoSimulacao, validando o armazenamento do estado global produzido pelo Engine para cada passo da simulação.
- *
- * Autores:
- * - Francisco Mestre Nº 76914
- * - Diogo Carvalho Nº 90247
- * - Rudy Silva Nº 88487
- *
- * Data: 26/04/2026
+ * Responsabilidade: suportar uma responsabilidade específica do simulador de navegação.
+ * @author Francisco Mestre Nº 76914
+ * @author Diogo Carvalho Nº 90247
+ * @author Rudy Silva Nº 88487
+ * @version 26-04-2026
+ * @inv a classe mantém válidos os dados necessários à sua responsabilidade.
  */
 public class EstadoSimulacaoTests {
+    /**
+ * Responsabilidade: validar constructor and getters através de um teste unitário.
+ */
     @Test
     public void testConstructorAndGetters() {
         Vetor corrente = new Vetor(1.0, 0.0);
@@ -36,6 +37,9 @@ public class EstadoSimulacaoTests {
         assertEquals(1, estado.getObstaculos().size());
     }
 
+    /**
+ * Responsabilidade: validar lists are copied and unmodifiable através de um teste unitário.
+ */
     @Test
     public void testListsAreCopiedAndUnmodifiable() {
         List<InfoNavio> navios = new ArrayList<>();
@@ -49,6 +53,9 @@ public class EstadoSimulacaoTests {
                 () -> estado.getNavios().add(new InfoNavio("B0", new Ponto(1.0, 0.0), EstadoNavio.EM_MOVIMENTO, false)));
     }
 
+    /**
+ * Responsabilidade: validar invalid estado simulacao através de um teste unitário.
+ */
     @Test
     public void testInvalidEstadoSimulacao() {
         assertThrows(IllegalArgumentException.class,
