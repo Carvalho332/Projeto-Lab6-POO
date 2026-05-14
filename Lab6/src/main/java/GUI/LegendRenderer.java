@@ -59,7 +59,7 @@ final class LegendRenderer {
 
         linhaY += passo;
         desenharIconeObstaculoMovel(g2, iconX, linhaY);
-        desenharTexto(g2, textX, linhaY, "Obstaculo Movél");
+        desenharTexto(g2, textX, linhaY, "Obstáculo Móvel");
 
         linhaY += passo;
         desenharIconePorto(g2, iconX, linhaY);
@@ -71,7 +71,7 @@ final class LegendRenderer {
 
         linhaY += passo;
         desenharIconeNavioEmEspera(g2, iconX, linhaY);
-        desenharTexto(g2, textX, linhaY, "Navio em Espera / Colisao");
+        desenharTexto(g2, textX, linhaY, "Navio em Espera / Colisão");
 
         g2.setFont(fonteOriginal);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, antialias);

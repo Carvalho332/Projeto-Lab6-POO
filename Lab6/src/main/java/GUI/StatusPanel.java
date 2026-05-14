@@ -40,7 +40,7 @@ public class StatusPanel extends JPanel {
     private static final Color COR_GRELHA = new Color(155, 155, 155);
     private static final Color COR_MENSAGEM = new Color(80, 80, 80);
 
-    private static final int LARGURA_PAINEL = 465;
+    private static final int LARGURA_PAINEL = 515;
     private static final int ALTURA_TABELA_NAVIOS = 255;
     private static final int ALTURA_TABELA_PORTOS = 310;
     private static final int ALTURA_LINHA = 23;
@@ -63,8 +63,8 @@ public class StatusPanel extends JPanel {
     private static final String[] COLUNAS_PORTOS = {"Porto", "Viagem em espera"};
 
     private static final int[] LARGURAS_RESUMO = {110, 280};
-    private static final int[] LARGURAS_NAVIOS = {50, 95, 45, 45, 65, 50, 50, 65};
-    private static final int[] LARGURAS_PORTOS = {80, 340};
+    private static final int[] LARGURAS_NAVIOS = {50, 105, 45, 45, 65, 50, 50, 65};
+    private static final int[] LARGURAS_PORTOS = {115, 360};
 
     private final JLabel mensagemNavios;
     private final JLabel mensagemPortos;
@@ -460,11 +460,7 @@ public class StatusPanel extends JPanel {
  * @return texto no formato T=?, destino, velocidade.
  */
     private String formatarViagemEnunciado(InfoViagem viagem) {
-        return String.format(Locale.US,
-                "T=%d, %s, %.2f",
-                viagem.getTempoSaida(),
-                viagem.getDestino(),
-                viagem.getVelocidadeLinear());
+        return String.format(Locale.US, "T=%d, %s, %.2f", viagem.getTempoSaida(), viagem.getDestino(), viagem.getVelocidadeLinear());
     }
 
     /**
